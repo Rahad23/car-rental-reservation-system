@@ -1,0 +1,25 @@
+.custom-datetime-picker {
+  width: 300px; /* Control the width of the picker */
+  height: 50px; /* Control the height */
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-top: 40px;
+}
+
+.custom-datetime-picker input {
+  width: 100%; /* Make the input field take full width */
+  height: 20px; /* Control the height of input fields */
+  padding: 5px 10px;
+  font-size: 16px;
+}
+
+.custom-datetime-picker select {
+  height: 20px; /* Control the height of select elements */
+  font-size: 16px; /* Adjust font size for better readability */
+}
+
+.custom-datetime-picker .react-datetime-picker__wrapper {
+  border: none;
+  box-shadow: none;
+}
