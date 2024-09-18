@@ -1,7 +1,7 @@
-
 import { Card, CardContent } from "@/components/ui/card";
 
 import Car_Management from "../Car_Management/Car_Management";
+import Booking_Management from "../Order_Management/Booking_Management";
 
 const Sidebar = () => {
   return (
@@ -11,6 +11,9 @@ const Sidebar = () => {
           <ul className="text-[#2D3A4B] lg:flex grid lg:flex-col grid-cols-1 lg:gap-0 gap-1">
             <li className="text-lg font-semibold lg:w-full w-[80%] mx-auto">
               <Car_Management />
+            </li>
+            <li className="text-lg font-semibold lg:w-full w-[80%] mx-auto">
+              <Booking_Management />
             </li>
           </ul>
         </CardContent>

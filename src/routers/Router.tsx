@@ -1,6 +1,7 @@
 import App from "@/App";
 import Avis_home from "@/AVIS_Dashboard/Avis_home/Avis_home";
 import Create_Car from "@/AVIS_Dashboard/Create_Car/Create_Car";
+import Return_Car from "@/AVIS_Dashboard/Return_Car/Return_Car";
 import Main from "@/components/layout/Main";
 import Booking_Car from "@/pages/booking_page/Booking_Car";
 import All_Cars from "@/pages/Cars__/all_cars/All_Cars";
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
             path: "create-car",
             element: <Create_Car />,
           },
+          {
+            path: "return-car",
+            element: <Return_Car />,
+          },
         ],
       },
       {
@@ -50,8 +55,6 @@ const router = createBrowserRouter([
           },
         ],
       },
-      
-      
     ],
   },
 ]);
