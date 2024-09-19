@@ -9,6 +9,7 @@ import { baseApi } from "./api/baseApi";
 import authReducer from "./features/auth/Auth/AuthSlice";
 import bookingReducer from "./features/Booking/BookinasSlice";
 import forgotPasswordReducer from "./features/forgot_password/Forgot_Password_Slice";
+import updateUserReducer from "./features/auth/Auth/Auth.Update.User.Slice";
 
 import {
   persistStore,
@@ -39,6 +40,7 @@ export const store = configureStore({
     auth: persistedAuthReducer,
     booking: bookingReducer,
     forgotPassword: forgotPasswordReducer,
+    updateUser: updateUserReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

@@ -11,13 +11,15 @@ import ProfileEditDialog from "./ProfileEditDialog";
 
 const User_profile = () => {
   const loginUserData = useAppSelector((state: RootState) => state.auth);
-  console.log(loginUserData);
+
   const payload = {
     email: loginUserData?.user?.email,
     token: loginUserData.token,
   };
 
   const { data, isLoading } = useGetSingleUserQuery(payload);
+
+  const userProfileImg = data && data?.data?.profile_img;
 
   return isLoading ? (
     <div className="w-full">
@@ -34,7 +36,7 @@ const User_profile = () => {
                   <img
                     alt=""
                     className="w-40 h-40 rounded-full ring-2 ring-offset-4 dark:bg-gray-500 dark:ring-violet-600 dark:ring-offset-gray-100"
-                    src={defaultProfileImg}
+                    src={userProfileImg ? userProfileImg : defaultProfileImg}
                   />
                 </div>
               </div>
@@ -104,7 +106,7 @@ const User_profile = () => {
               </div>
             </div>
 
-            <ProfileEditDialog />
+            <ProfileEditDialog profileImg={userProfileImg} />
           </CardContent>
         </Card>
       </div>

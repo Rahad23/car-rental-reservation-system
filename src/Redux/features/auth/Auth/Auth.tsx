@@ -24,7 +24,20 @@ const user_ = baseApi.injectEndpoints({
       },
       invalidatesTags: ["auth"],
     }),
+    updateUser: builder.mutation({
+      query: ({payload, token}) => {
+        return {
+          url: "/auth/user/update-profile",
+          method: "PATCH",
+          body: payload,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+      },
+      invalidatesTags: ["auth"],
+    }),
   }),
 });
 
-export const { useGetSingleUserQuery } = user_;
+export const { useGetSingleUserQuery, useUpdateUserMutation } = user_;
