@@ -60,9 +60,9 @@ const Return_Car = () => {
     usePaymentReturnCarMutation();
 
   //handle payment
-  const handlePayment = async (paymentTK: string) => {
+  const handlePayment = async (id: string) => {
     const result = await paymentReturnCar({
-      paymentTK: paymentTK,
+      id,
       token: authData.token,
     });
 
@@ -111,14 +111,14 @@ const Return_Car = () => {
               <TableCell>{car?.startTime}</TableCell>
               <TableCell className="text-right">
                 {car?.totalCost ? (
-                  car?.totalCost
+                  <div>{car?.totalCost}.TK</div>
                 ) : (
                   <div>
                     {paymentLoading ? (
                       <LoadingButton message="Redirect payment..." />
                     ) : (
                       <Button
-                        onClick={() => handlePayment(car?.carId?.pricePerHour)}
+                        onClick={() => handlePayment(car._id)}
                         className="bg-[#D4002A] hover:bg-[#D4002A]"
                       >
                         Return

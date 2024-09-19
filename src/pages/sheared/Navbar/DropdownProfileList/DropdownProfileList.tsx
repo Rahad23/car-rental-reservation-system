@@ -15,8 +15,13 @@ import LogoutAlertDialog from "../LogoutAlertDialog/LogoutAlertDialog";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
+import { useAppSelector } from "@/Redux/hook";
+import { RootState } from "@/Redux/store";
+
 const DropdownProfileList = () => {
   const [open, setOpen] = useState(false);
+  const loginUser = useAppSelector((state: RootState) => state.auth);
+
   return (
     <DropdownMenu open={open}>
       <DropdownMenuTrigger asChild>
@@ -38,19 +43,23 @@ const DropdownProfileList = () => {
           />
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <User className="mr-2 h-4 w-4" />
-          <span>Profile</span>
-          <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <User className="mr-2 h-4 w-4" />
-          <Link to={"/avis_home"}>
-            <span>AVIS Dashboard</span>
-          </Link>
+        <Link to={"/profile"}>
+          <DropdownMenuItem className="cursor-pointer">
+            <User className="mr-2 h-4 w-4" />
+            <span>Profile</span>
+            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+          </DropdownMenuItem>
+        </Link>
+        {loginUser?.user?.role === "admin" && (
+          <DropdownMenuItem>
+            <User className="mr-2 h-4 w-4" />
+            <Link to={"/avis_home"}>
+              <span>AVIS Dashboard</span>
+            </Link>
 
-          <DropdownMenuShortcut>⇧⌘A_D</DropdownMenuShortcut>
-        </DropdownMenuItem>
+            <DropdownMenuShortcut>⇧⌘A_D</DropdownMenuShortcut>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem
           //   onClick={() => dispatch(logOutUser())}
           className="text-red-600 hover:text-red-600 cursor-pointer"

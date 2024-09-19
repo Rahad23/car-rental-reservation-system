@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const baseApi = createApi({
   reducerPath: "baseApi",
-  tagTypes: ["registration", "login", "carTypes", "car-features", "car", "booking"],
+  tagTypes: ["registration", "login", "carTypes", "car-features", "car", "booking", "auth"],
   //Live link
   //https://campers-shop-backend-nine.vercel.app/api/v2
   //local host: http://localhost:5000

@@ -26,6 +26,7 @@ import { getCurrentFormattedDate } from "@/formatedCurrentTimes/TimeFormate";
 import LoadingButton from "@/Loading_Spinners/LoadingButton/LoadingButton";
 import { jwtDecode } from "jwt-decode";
 import { setUser, TUser } from "@/Redux/features/auth/Auth/AuthSlice";
+import { Link } from "react-router-dom";
 //error interface
 interface ErrorSource {
   path: string;
@@ -76,9 +77,6 @@ const Login = () => {
             title: "Login successful!",
             description: getCurrentFormattedDate(),
             style: { background: "#7af59b", color: "#2D3A4B" },
-            //   action: (
-            //     <ToastAction altText="Goto schedule to undo">Undo</ToastAction>
-            //   ),
           });
         }
 
@@ -89,9 +87,6 @@ const Login = () => {
             title: `${error?.data?.message} !`,
             description: getCurrentFormattedDate(),
             style: { background: " #dc2626", color: "#fff" },
-            //   action: (
-            //     <ToastAction altText="Goto schedule to undo">Undo</ToastAction>
-            //   ),
           });
         }
       }
@@ -145,9 +140,11 @@ const Login = () => {
                 </span>
               </div>
             </div>
-            <span className="mt-1 block text-gray-950 hover:border-b-[0.5px] hover:border-gray-950 hover:border-dashed w-36 cursor-pointer">
-              Forgot Password?
-            </span>
+            <Link to={"/forgot_password"}>
+              <span className="mt-1 block text-gray-950 hover:border-b-[0.5px] hover:border-gray-950 hover:border-dashed w-36 cursor-pointer">
+                Forgot Password?
+              </span>
+            </Link>
             <div className="flex justify-center">
               {userLoginLoading ? (
                 <LoadingButton message="Wait" />

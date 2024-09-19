@@ -36,31 +36,6 @@ import LoadingButton from "@/Loading_Spinners/LoadingButton/LoadingButton";
 import { setIsOpen } from "@/Redux/features/auth/Login/LoginFormSlice";
 import { setIsRegOpen } from "@/Redux/features/auth/Registration/RegistrationFormSlice";
 
-// registration success response type
-// interface RegistrationSuccess {
-//   data: {
-//     data?: {
-//       address: string;
-//       createdAt: string;
-//       email: string;
-//       name: string;
-//       phone: string;
-//       role: string;
-//       updatedAt: string;
-//       __v: number;
-//       _id: string;
-//     };
-//     message: string;
-//     success: boolean;
-//     error?: {
-//       data: {
-//         errorSources: Array<{ message: string }>;
-//       };
-//     };
-//     isLoading: boolean;
-//   };
-// }
-
 interface CustomError {
   data?: {
     errorSources?: Array<{ path: string; message: string }>;
@@ -86,6 +61,8 @@ const Registration = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [seenPassword, setSeenPassword] = useState(false);
   const [zodError, setZodError] = useState<ZodIssue[]>([]);
+  const [agreeTermsAndCondition, setAgreeTermsAndCondition] = useState(false);
+
   const { toast } = useToast();
   // const resultValidation = registrationSchema.parse(userData);
 
@@ -98,6 +75,10 @@ const Registration = () => {
       dispatch(setPhoneNumber(value));
     }
   }, [value]);
+
+  const handleStateTermsAndConditions = (e: boolean) => {
+    setAgreeTermsAndCondition(e);
+  };
 
   const handleRegistration = async () => {
     try {
@@ -256,19 +237,30 @@ const Registration = () => {
               }
             </div>
             <div className="flex items-center space-x-2">
-              <Checkbox id="terms" />
-              <label
-                htmlFor="terms"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+              <span
+                onClick={() =>
+                  setAgreeTermsAndCondition(!agreeTermsAndCondition)
+                }
+                className="flex items-center gap-x-1"
               >
-                Accept{" "}
-                <Link to={"/"}>
-                  {" "}
-                  <span className="text-blue-800 border-b-[1px] border-blue-700">
-                    Terms And Conditions
-                  </span>
-                </Link>
-              </label>
+                <Checkbox
+                  checked={agreeTermsAndCondition}
+                  onCheckedChange={handleStateTermsAndConditions}
+                  id="terms"
+                />
+                <label
+                  htmlFor="terms"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                >
+                  Accept{" "}
+                </label>
+              </span>
+              <Link to={"/"}>
+                {" "}
+                <span className="text-blue-800 border-b-[1px] border-blue-700">
+                  Terms And Conditions
+                </span>
+              </Link>
             </div>
             <div className="flex justify-center">
               {loadingRegistration ? (
@@ -277,6 +269,7 @@ const Registration = () => {
                 <Button
                   onClick={handleRegistration}
                   className="bg-[#D4002A] hover:bg-[#D4002A] w-[150px] text-lg"
+                  disabled={agreeTermsAndCondition === false}
                 >
                   Sign Up
                 </Button>
