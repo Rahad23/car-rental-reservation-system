@@ -47,12 +47,12 @@ interface ErrorResponse {
 const Booking_Car = () => {
   const [value_, onChange_] = useState<Value>(new Date());
   const { id } = useParams();
-  const { data, isLoading } = useGetSingleCarQuery(id);
+  const authData = useAppSelector((state: RootState) => state.auth);
+  const { data, isLoading } = useGetSingleCarQuery({id, token: authData.token});
   const [zodError, setZodError] = useState<ZodIssue[]>([]);
   const { toast } = useToast();
   const dispatch = useDispatch();
   const carBookingData = useAppSelector((state: RootState) => state.booking);
-  const authData = useAppSelector((state: RootState) => state.auth);
   const [bookingCar, { isLoading: bookingLoading }] = useBookingCarMutation();
   const [time_, setTime] = useState("");
   const [timeSetError, setTimeSetError] = useState("");
@@ -64,11 +64,7 @@ const Booking_Car = () => {
       }
 
       if (value_ instanceof Date) {
-        const convertedTime = value_.toLocaleTimeString("en-GB", {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: false,
-        });
+        const convertedTimeUTC = value_.toISOString();
 
         const convertedDate = value_.toLocaleDateString("en-GB", {
           day: "2-digit",
@@ -76,9 +72,16 @@ const Booking_Car = () => {
           year: "numeric",
         });
 
-        if (convertedTime) {
-          setTime(convertedTime.split(":")[0]);
-          dispatch(setStartTime(convertedTime));
+        if (convertedTimeUTC) {
+          const getTime_ = `${value_
+            .getUTCHours()
+            .toString()
+            .padStart(2, "0")}:${value_
+            .getUTCMinutes()
+            .toString()
+            .padStart(2, "0")}`;
+          setTime(getTime_);
+          dispatch(setStartTime(convertedTimeUTC));
         }
 
         if (convertedDate) {

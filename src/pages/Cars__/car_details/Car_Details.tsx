@@ -5,10 +5,16 @@ import { useGetSingleCarQuery } from "@/Redux/features/Cars/Cars";
 import { Link, useParams } from "react-router-dom";
 import { PhotoProvider, PhotoView } from "react-photo-view";
 import "react-photo-view/dist/react-photo-view.css";
+import { RootState } from "@/Redux/store";
+import { useAppSelector } from "@/Redux/hook";
 
 const Car_Details = () => {
   const { id } = useParams();
-  const { data, isLoading } = useGetSingleCarQuery(id);
+  const authData = useAppSelector((state: RootState) => state.auth);
+  const { data, isLoading } = useGetSingleCarQuery({
+    id,
+    token: authData.token,
+  });
 
   return isLoading ? (
     <div className="w-full">

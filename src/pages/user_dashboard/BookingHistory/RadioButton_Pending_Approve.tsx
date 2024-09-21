@@ -18,7 +18,7 @@ const RadioButton_Pending_Approve: React.FC<TRadioButtonTypeProps> = ({
           onClick={() => setPendingApprove("pending")}
         >
           <RadioGroupItem
-            value="default"
+            value="pending"
             id="r1"
             checked={pendingApprove === "pending"}
             className="text-[#D4002A] border-[#D4002A]"
@@ -32,13 +32,28 @@ const RadioButton_Pending_Approve: React.FC<TRadioButtonTypeProps> = ({
           onClick={() => setPendingApprove("approve")}
         >
           <RadioGroupItem
-            value="comfortable"
+            value="approve"
             id="r2"
-            checked={pendingApprove !== "pending"}
+            onClick={() => setPendingApprove("approve")}
+            checked={pendingApprove === "approve"}
             className="text-[#D4002A] border-[#D4002A]"
           />
           <Label htmlFor="r2" className="cursor-pointer">
             Approve
+          </Label>
+        </div>
+        <div
+          className="flex items-center space-x-2"
+          onClick={() => setPendingApprove("canceled")}
+        >
+          <RadioGroupItem
+            value="canceled"
+            id="r3"
+            checked={pendingApprove === "canceled"}
+            className="text-[#D4002A] border-[#D4002A]"
+          />
+          <Label htmlFor="r3" className="cursor-pointer">
+            Canceled
           </Label>
         </div>
       </RadioGroup>

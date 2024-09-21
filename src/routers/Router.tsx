@@ -1,4 +1,7 @@
 import App from "@/App";
+import All_Cars_Admin from "@/AVIS_Dashboard/All_Cars/All_Cars_Admin";
+import Cars_Edit from "@/AVIS_Dashboard/All_Cars/Cars_Edit";
+import Avis_Dashboard from "@/AVIS_Dashboard/Avis_home/Avis_Dash_Board/Avis_Dashboard";
 import Avis_home from "@/AVIS_Dashboard/Avis_home/Avis_home";
 import Create_Car from "@/AVIS_Dashboard/Create_Car/Create_Car";
 import ManageBookings from "@/AVIS_Dashboard/MangeBookings/ManageBookings";
@@ -33,6 +36,10 @@ const router = createBrowserRouter([
         element: <Avis_home />,
         children: [
           {
+            path: "/avis_home",
+            element: <Avis_Dashboard />,
+          },
+          {
             path: "create-car",
             element: (
               <OnlyAdmin>
@@ -53,6 +60,22 @@ const router = createBrowserRouter([
             element: (
               <OnlyAdmin>
                 <ManageBookings />
+              </OnlyAdmin>
+            ),
+          },
+          {
+            path: "all_cars",
+            element: (
+              <OnlyAdmin>
+                <All_Cars_Admin />
+              </OnlyAdmin>
+            ),
+          },
+          {
+            path: "cars_edit/:id",
+            element: (
+              <OnlyAdmin>
+                <Cars_Edit />
               </OnlyAdmin>
             ),
           },

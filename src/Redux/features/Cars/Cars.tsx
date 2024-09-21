@@ -78,13 +78,41 @@ const cars = baseApi.injectEndpoints({
       invalidatesTags: ["car"],
     }),
     getSingleCar: builder.query({
-      query: ( id ) => {
+      query: ({ id, token }) => {
         return {
           url: `/cars/${id}`,
           method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         };
       },
       providesTags: ["car"],
+    }),
+    updateCar: builder.mutation({
+      query: ({ id, token, payload }) => {
+        return {
+          url: `/cars/${id}`,
+          method: "PUT",
+          body: payload,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+      },
+      invalidatesTags: ["car"],
+    }),
+    deleteCar: builder.mutation({
+      query: ({ id, token }) => {
+        return {
+          url: `/cars/${id}`,
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+      },
+      invalidatesTags: ["car"],
     }),
   }),
 });
@@ -95,5 +123,7 @@ export const {
   useMakeCarMutation,
   useGetCarsQuery,
   useGetCarWithTypeQuery,
-  useGetSingleCarQuery
+  useGetSingleCarQuery,
+  useUpdateCarMutation,
+  useDeleteCarMutation,
 } = cars;

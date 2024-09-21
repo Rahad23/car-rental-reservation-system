@@ -8,18 +8,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getCurrentFormattedDate } from "@/formatedCurrentTimes/TimeFormate";
-import { useToast } from "@/hooks/use-toast";
+
 import LoadingButton from "@/Loading_Spinners/LoadingButton/LoadingButton";
 import LoadingSpenar from "@/Loading_Spinners/LoadingSpenar/LoadingSpenar";
-import {
-  useCancelRentCarMutation,
-  useConfirmRentCarMutation,
-  useGetAllBookingsQuery,
-} from "@/Redux/features/Booking/Booking";
+import { useGetAllBookingsQuery } from "@/Redux/features/Booking/Booking";
 import { usePaymentReturnCarMutation } from "@/Redux/features/payment/Payment";
 import { useAppSelector } from "@/Redux/hook";
 import { RootState } from "@/Redux/store";
+import CancelRentDialog from "./AleartDialog/CancelRentDialog";
+import ConfirmRentDialog from "./AleartDialog/ConfirmRentDialog";
+import { useState } from "react";
 
 type Car = {
   car_image: string;
@@ -58,22 +56,17 @@ interface CarBooking {
 }
 
 const Return_Car = () => {
-  const { toast } = useToast();
   const authData = useAppSelector((state: RootState) => state.auth);
   const { data, isLoading: getAllBookingsLoading } = useGetAllBookingsQuery({
     token: authData.token,
   });
-
-  const [confirmRentCar, { isLoading: confirmRentLoading }] =
-    useConfirmRentCarMutation();
-  const [cancelRentCar, { isLoading: cancelRentLoading }] =
-    useCancelRentCarMutation();
-
+  const [carId, setCarId] = useState("");
   const [paymentReturnCar, { isLoading: paymentLoading }] =
     usePaymentReturnCarMutation();
 
   //handle payment
   const handlePayment = async (id: string) => {
+    setCarId(id);
     const result = await paymentReturnCar({
       id,
       token: authData.token,
@@ -84,29 +77,24 @@ const Return_Car = () => {
     }
   };
 
-  //confirm bookings
-  const handleConfirmBooking = async (id: string) => {
-    const result = await confirmRentCar({ id, token: authData.token });
-    if (result?.data?.success) {
-      toast({
-        title: "Car Rent Confirm successfully!",
-        description: getCurrentFormattedDate(),
-        style: { background: "#7af59b", color: "#2D3A4B" },
-      });
-    }
-  };
+  //formated time
+  function formatStartTime(isoString: string) {
+    const date = new Date(isoString);
 
-  const handleCancelRentCar = async (id: string) => {
-    const result = await cancelRentCar({ id, token: authData.token });
+    // Get day, month, and year
+    const day = String(date.getUTCDate()).padStart(2, "0"); // Get day (2 digits)
+    const month = String(date.getUTCMonth() + 1).padStart(2, "0"); // Get month (1-12, so add 1 and format)
+    const year = date.getUTCFullYear(); // Get year (YYYY)
 
-    if (result?.data?.success) {
-      toast({
-        title: "Car Rent Cancel successfully!",
-        description: getCurrentFormattedDate(),
-        style: { background: "#7af59b", color: "#2D3A4B" },
-      });
-    }
-  };
+    // Format time (HH:mm)
+    const formattedTime = date.toLocaleTimeString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+
+    return `${day}/${month}/${year} (${formattedTime})`; // Combine date and time
+  }
 
   return getAllBookingsLoading ? (
     <div className="w-full">
@@ -145,7 +133,7 @@ const Return_Car = () => {
                 {car?.carId?.features?.map((data) => data).join(", ")}
               </TableCell>
               <TableCell>{car?.date}</TableCell>
-              <TableCell>{car?.startTime}</TableCell>
+              <TableCell>{formatStartTime(car?.startTime)}</TableCell>
               <TableCell className="text-right">
                 {car?.cancelRent ? (
                   <h1 className="text-red-600 font-semibold">Rent Cancel</h1>
@@ -153,30 +141,12 @@ const Return_Car = () => {
                   <div>{car?.totalCost}.TK</div>
                 ) : (
                   <div>
-                    {paymentLoading ? (
+                    {paymentLoading && car?._id === carId ? (
                       <LoadingButton message="Redirect payment..." />
                     ) : car.isBooked === "unconfirmed" ? (
                       <div className="flex items-center justify-center gap-x-1">
-                        {confirmRentLoading ? (
-                          <LoadingButton message="Wait" />
-                        ) : (
-                          <Button
-                            onClick={() => handleConfirmBooking(car?._id)}
-                            className="bg-green-600 hover:bg-green-600"
-                          >
-                            Confirm
-                          </Button>
-                        )}
-                        {cancelRentLoading ? (
-                          <LoadingButton message="wait" />
-                        ) : (
-                          <Button
-                            onClick={() => handleCancelRentCar(car?._id)}
-                            className="bg-red-600 hover:bg-red-600"
-                          >
-                            Cancel
-                          </Button>
-                        )}
+                        <ConfirmRentDialog id={car?._id} />
+                        <CancelRentDialog id={car?._id} />
                       </div>
                     ) : (
                       <Button

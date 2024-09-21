@@ -14,9 +14,10 @@ import { useGetUserBookingsQuery } from "@/Redux/features/Booking/Booking";
 
 import { useAppSelector } from "@/Redux/hook";
 import { RootState } from "@/Redux/store";
-import BookingHistoryActions from "./BookingHistoryActions";
 import { useState } from "react";
 import RadioButton_Pending_Approve from "./RadioButton_Pending_Approve";
+import { Button } from "@/components/ui/button";
+import CancelDialog from "./CancelDialog/CancelDialog";
 
 type Car = {
   car_image: string;
@@ -51,11 +52,11 @@ interface CarBooking {
   startTime: string;
   totalCost: number;
   user: User;
+  cancelRent: boolean;
 }
 
 const BookingHistory = () => {
   const authData = useAppSelector((state: RootState) => state.auth);
-  const [openActionDropdown, setOpenActionDropdown] = useState(false);
   const [pendingApprove, setPendingApprove] = useState("pending");
   // const { data, isLoading: getAllBookingsLoading } = useGetAllBookingsQuery({
   //   token: authData.token,
@@ -66,6 +67,24 @@ const BookingHistory = () => {
 
   console.log(data?.data?.approveBooking);
   console.log(data?.data?.pendingBooking);
+
+  function formatStartTime(isoString: string) {
+    const date = new Date(isoString);
+
+    // Get day, month, and year
+    const day = String(date.getUTCDate()).padStart(2, "0"); // Get day (2 digits)
+    const month = String(date.getUTCMonth() + 1).padStart(2, "0"); // Get month (1-12, so add 1 and format)
+    const year = date.getUTCFullYear(); // Get year (YYYY)
+
+    // Format time (HH:mm)
+    const formattedTime = date.toLocaleTimeString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+
+    return `${day}/${month}/${year} (${formattedTime})`; // Combine date and time
+  }
 
   return getUserBookingLoading ? (
     <div className="w-full">
@@ -113,16 +132,20 @@ const BookingHistory = () => {
                       {car?.carId?.features?.map((data) => data).join(", ")}
                     </TableCell>
                     <TableCell>{car?.date}</TableCell>
-                    <TableCell>{car?.startTime}</TableCell>
+                    <TableCell>{formatStartTime(car?.startTime)}</TableCell>
                     <TableCell className="text-right">
-                      {car?.totalCost ? (
-                        <div>{car?.totalCost}.TK</div>
+                      {car?.isBooked === "confirmed" ? (
+                        <div>
+                          <Button className="bg-[#D4002A] hover:bg-[#D4002A]">
+                            Return
+                          </Button>
+                        </div>
+                      ) : car?.cancelRent ? (
+                        <span className="text-red-600 font-semibold">
+                          Canceled
+                        </span>
                       ) : (
-                        <BookingHistoryActions
-                          carId={car._id}
-                          setOpenActionDropdown={setOpenActionDropdown}
-                          openActionDropdown={openActionDropdown}
-                        />
+                        <CancelDialog id={car?._id} />
                       )}
                     </TableCell>
                   </TableRow>
@@ -144,16 +167,49 @@ const BookingHistory = () => {
                       {car?.carId?.features?.map((data) => data).join(", ")}
                     </TableCell>
                     <TableCell>{car?.date}</TableCell>
-                    <TableCell>{car?.startTime}</TableCell>
+                    <TableCell>{formatStartTime(car?.startTime)}</TableCell>
                     <TableCell className="text-right">
-                      {car?.totalCost ? (
-                        <div>{car?.totalCost}.TK</div>
+                      {car?.isBooked === "confirmed" && (
+                        <div>
+                          <Button className="bg-[#D4002A] hover:bg-[#D4002A]">
+                            Return
+                          </Button>
+                        </div>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              {pendingApprove === "canceled" &&
+                data?.data?.canceledBooking?.map((car: CarBooking) => (
+                  <TableRow key={car._id}>
+                    <TableCell>
+                      <img src={car.carId.car_image} alt="" />
+                    </TableCell>
+                    <TableCell>
+                      <span>{car.carId.name}</span>
+                    </TableCell>
+                    <TableCell>
+                      <span>{car.carId.pricePerHour}.TK</span>
+                    </TableCell>
+                    <TableCell>{car.carId.color}</TableCell>
+                    <TableCell>
+                      {car?.carId?.features?.map((data) => data).join(", ")}
+                    </TableCell>
+                    <TableCell>{car?.date}</TableCell>
+                    <TableCell>{formatStartTime(car?.startTime)}</TableCell>
+                    <TableCell className="text-right">
+                      {car?.isBooked === "confirmed" ? (
+                        <div>
+                          <Button className="bg-[#D4002A] hover:bg-[#D4002A]">
+                            Return
+                          </Button>
+                        </div>
+                      ) : car?.cancelRent ? (
+                        <span className="text-red-600 font-semibold">
+                          Canceled
+                        </span>
                       ) : (
-                        <BookingHistoryActions
-                          carId={car._id}
-                          setOpenActionDropdown={setOpenActionDropdown}
-                          openActionDropdown={openActionDropdown}
-                        />
+                        <CancelDialog id={car?._id} />
                       )}
                     </TableCell>
                   </TableRow>

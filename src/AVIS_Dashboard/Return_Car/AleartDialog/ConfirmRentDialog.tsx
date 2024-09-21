@@ -1,0 +1,69 @@
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { getCurrentFormattedDate } from "@/formatedCurrentTimes/TimeFormate";
+import { useToast } from "@/hooks/use-toast";
+import LoadingButton from "@/Loading_Spinners/LoadingButton/LoadingButton";
+import { useConfirmRentCarMutation } from "@/Redux/features/Booking/Booking";
+import { useAppSelector } from "@/Redux/hook";
+import { RootState } from "@/Redux/store";
+
+const ConfirmRentDialog: React.FC<{ id: string }> = ({ id }) => {
+  const { toast } = useToast();
+  const authData = useAppSelector((state: RootState) => state.auth);
+  const [confirmRentCar, { isLoading: confirmRentLoading }] =
+    useConfirmRentCarMutation();
+
+  const handleConfirmBooking = async (id: string) => {
+    const result = await confirmRentCar({ id, token: authData.token });
+    if (result?.data?.success) {
+      toast({
+        title: "Car Rent Confirm successfully!",
+        description: getCurrentFormattedDate(),
+        style: { background: "#7af59b", color: "#2D3A4B" },
+      });
+    }
+  };
+
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button
+          variant="outline"
+          className=" bg-green-600 hover:bg-green-600 hover:text-white text-white"
+        >
+          Confirm
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogDescription>
+            Do You want to confirm this rent request?
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          {confirmRentLoading ? (
+            <LoadingButton message="Wait" />
+          ) : (
+            <AlertDialogAction onClick={() => handleConfirmBooking(id)}>
+              Confirm
+            </AlertDialogAction>
+          )}
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+};
+
+export default ConfirmRentDialog;
