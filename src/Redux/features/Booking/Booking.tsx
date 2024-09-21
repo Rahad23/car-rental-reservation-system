@@ -15,6 +15,30 @@ const Bookings = baseApi.injectEndpoints({
       },
       invalidatesTags: ["booking"],
     }),
+    confirmRentCar: builder.mutation({
+      query: ({ id, token }) => {
+        return {
+          url: `/bookings/confirm?id=${id}`,
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+      },
+      invalidatesTags: ["booking"],
+    }),
+    cancelRentCar: builder.mutation({
+      query: ({ id, token }) => {
+        return {
+          url: `/bookings/cancel?id=${id}`,
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+      },
+      invalidatesTags: ["booking"],
+    }),
     getAllBookings: builder.query({
       query: (token) => {
         return {
@@ -27,7 +51,25 @@ const Bookings = baseApi.injectEndpoints({
       },
       providesTags: ["booking"],
     }),
+    getUserBookings: builder.query({
+      query: (token) => {
+        return {
+          url: `/bookings/my-bookings`,
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token.token}`,
+          },
+        };
+      },
+      providesTags: ["booking"],
+    }),
   }),
 });
 
-export const { useBookingCarMutation, useGetAllBookingsQuery } = Bookings;
+export const {
+  useBookingCarMutation,
+  useGetAllBookingsQuery,
+  useGetUserBookingsQuery,
+  useCancelRentCarMutation,
+  useConfirmRentCarMutation,
+} = Bookings;

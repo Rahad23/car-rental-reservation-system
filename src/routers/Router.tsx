@@ -1,6 +1,7 @@
 import App from "@/App";
 import Avis_home from "@/AVIS_Dashboard/Avis_home/Avis_home";
 import Create_Car from "@/AVIS_Dashboard/Create_Car/Create_Car";
+import ManageBookings from "@/AVIS_Dashboard/MangeBookings/ManageBookings";
 import Return_Car from "@/AVIS_Dashboard/Return_Car/Return_Car";
 import Main from "@/components/layout/Main";
 import AboutUS from "@/pages/AboutUS/AboutUS";
@@ -11,7 +12,9 @@ import Car_with_category from "@/pages/Cars__/car_with_category/Car_with_categor
 import Cars_Home from "@/pages/Cars__/cars_home/Cars_Home";
 import Error_page from "@/pages/Error_page/Error_page";
 import Forgot_password from "@/pages/forgot_password/Forgot_password";
-import User_profile from "@/pages/user_dashboard/User_profile";
+import BookingHistory from "@/pages/user_dashboard/BookingHistory/BookingHistory";
+import User_profile from "@/pages/user_dashboard/Profile/User_profile";
+import CheckLogin from "@/ProtectedRoute/CheckLogin";
 import OnlyAdmin from "@/ProtectedRoute/OnlyAdmin";
 import { createBrowserRouter } from "react-router-dom";
 
@@ -42,6 +45,14 @@ const router = createBrowserRouter([
             element: (
               <OnlyAdmin>
                 <Return_Car />
+              </OnlyAdmin>
+            ),
+          },
+          {
+            path: "manage-booking",
+            element: (
+              <OnlyAdmin>
+                <ManageBookings />
               </OnlyAdmin>
             ),
           },
@@ -79,7 +90,19 @@ const router = createBrowserRouter([
       },
       {
         path: "/profile",
-        element: <User_profile />,
+        element: (
+          <CheckLogin>
+            <User_profile />
+          </CheckLogin>
+        ),
+      },
+      {
+        path: "/user-booking",
+        element: (
+          <CheckLogin>
+            <BookingHistory />
+          </CheckLogin>
+        ),
       },
     ],
   },

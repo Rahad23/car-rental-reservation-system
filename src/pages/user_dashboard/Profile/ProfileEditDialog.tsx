@@ -8,8 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { BiSolidEdit } from "react-icons/bi";
-import defaultProfileImg from "../../assets/man/profile.png";
+import defaultProfileImg from "../../../assets/man/profile.png";
 import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -33,12 +32,13 @@ import PhoneInput from "react-phone-number-input";
 
 interface TProfileEditDialogProps {
   profileImg: string;
+  setOpenDropdown: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const ProfileEditDialog: React.FC<TProfileEditDialogProps> = ({
   profileImg,
+  setOpenDropdown,
 }) => {
-
   type E164Number = string;
   const [showImgIcon, setImgIcon] = useState(false);
   const [profileImg_, setProfileImg] = useState<File | null>(null);
@@ -100,6 +100,7 @@ const ProfileEditDialog: React.FC<TProfileEditDialogProps> = ({
         if (result?.data?.success) {
           dispatch(resetUpdateUserState());
           setModalIsOpen(false);
+          setOpenDropdown(false);
         }
       }
     } catch (e) {
@@ -116,13 +117,10 @@ const ProfileEditDialog: React.FC<TProfileEditDialogProps> = ({
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className="absolute top-0 right-6 bg-[#ddd] hover:bg-[#ddd] p-0 rounded-none border-none"
+          className="hover:bg-[#FFFFFF] p-0 rounded-none border-none w-full flex justify-start"
           onClick={() => setModalIsOpen(true)}
         >
-          <BiSolidEdit
-            className=" text-2xl text-[#D4002A]  cursor-pointer"
-            title="Update Profile"
-          />
+          Edit Profile
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px] px-7 overflow-y-scroll no-scrollbar h-[550px]">

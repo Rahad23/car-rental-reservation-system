@@ -8,9 +8,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { getCurrentFormattedDate } from "@/formatedCurrentTimes/TimeFormate";
+import { useToast } from "@/hooks/use-toast";
 import LoadingButton from "@/Loading_Spinners/LoadingButton/LoadingButton";
 import LoadingSpenar from "@/Loading_Spinners/LoadingSpenar/LoadingSpenar";
-import { useGetAllBookingsQuery } from "@/Redux/features/Booking/Booking";
+import {
+  useCancelRentCarMutation,
+  useConfirmRentCarMutation,
+  useGetAllBookingsQuery,
+} from "@/Redux/features/Booking/Booking";
 import { usePaymentReturnCarMutation } from "@/Redux/features/payment/Payment";
 import { useAppSelector } from "@/Redux/hook";
 import { RootState } from "@/Redux/store";
@@ -48,13 +54,20 @@ interface CarBooking {
   startTime: string;
   totalCost: number;
   user: User;
+  cancelRent: boolean;
 }
 
 const Return_Car = () => {
+  const { toast } = useToast();
   const authData = useAppSelector((state: RootState) => state.auth);
   const { data, isLoading: getAllBookingsLoading } = useGetAllBookingsQuery({
     token: authData.token,
   });
+
+  const [confirmRentCar, { isLoading: confirmRentLoading }] =
+    useConfirmRentCarMutation();
+  const [cancelRentCar, { isLoading: cancelRentLoading }] =
+    useCancelRentCarMutation();
 
   const [paymentReturnCar, { isLoading: paymentLoading }] =
     usePaymentReturnCarMutation();
@@ -68,6 +81,30 @@ const Return_Car = () => {
 
     if (result?.data?.data?.result === "true") {
       window.location.href = result?.data?.data?.payment_url;
+    }
+  };
+
+  //confirm bookings
+  const handleConfirmBooking = async (id: string) => {
+    const result = await confirmRentCar({ id, token: authData.token });
+    if (result?.data?.success) {
+      toast({
+        title: "Car Rent Confirm successfully!",
+        description: getCurrentFormattedDate(),
+        style: { background: "#7af59b", color: "#2D3A4B" },
+      });
+    }
+  };
+
+  const handleCancelRentCar = async (id: string) => {
+    const result = await cancelRentCar({ id, token: authData.token });
+
+    if (result?.data?.success) {
+      toast({
+        title: "Car Rent Cancel successfully!",
+        description: getCurrentFormattedDate(),
+        style: { background: "#7af59b", color: "#2D3A4B" },
+      });
     }
   };
 
@@ -110,12 +147,37 @@ const Return_Car = () => {
               <TableCell>{car?.date}</TableCell>
               <TableCell>{car?.startTime}</TableCell>
               <TableCell className="text-right">
-                {car?.totalCost ? (
+                {car?.cancelRent ? (
+                  <h1 className="text-red-600 font-semibold">Rent Cancel</h1>
+                ) : car?.totalCost ? (
                   <div>{car?.totalCost}.TK</div>
                 ) : (
                   <div>
                     {paymentLoading ? (
                       <LoadingButton message="Redirect payment..." />
+                    ) : car.isBooked === "unconfirmed" ? (
+                      <div className="flex items-center justify-center gap-x-1">
+                        {confirmRentLoading ? (
+                          <LoadingButton message="Wait" />
+                        ) : (
+                          <Button
+                            onClick={() => handleConfirmBooking(car?._id)}
+                            className="bg-green-600 hover:bg-green-600"
+                          >
+                            Confirm
+                          </Button>
+                        )}
+                        {cancelRentLoading ? (
+                          <LoadingButton message="wait" />
+                        ) : (
+                          <Button
+                            onClick={() => handleCancelRentCar(car?._id)}
+                            className="bg-red-600 hover:bg-red-600"
+                          >
+                            Cancel
+                          </Button>
+                        )}
+                      </div>
                     ) : (
                       <Button
                         onClick={() => handlePayment(car._id)}

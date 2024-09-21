@@ -1,13 +1,13 @@
 import { Card, CardContent } from "@/components/ui/card";
-import "./User_Dashboard.style.css";
+import "../User_Dashboard.style.css";
 import { RootState } from "@/Redux/store";
 import { useAppSelector } from "@/Redux/hook";
-import defaultProfileImg from "../../assets/man/profile.png";
+import defaultProfileImg from "../../../assets/man/profile.png";
 import { useGetSingleUserQuery } from "@/Redux/features/auth/Auth/Auth";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import LoadingSpenar from "@/Loading_Spinners/LoadingSpenar/LoadingSpenar";
-import ProfileEditDialog from "./ProfileEditDialog";
+import ProfileDropdownOption from "./ProfileDropdownOption";
 
 const User_profile = () => {
   const loginUserData = useAppSelector((state: RootState) => state.auth);
@@ -106,7 +106,9 @@ const User_profile = () => {
               </div>
             </div>
 
-            <ProfileEditDialog profileImg={userProfileImg} />
+            <div className="absolute top-0 right-6">
+              <ProfileDropdownOption profileImg={userProfileImg} />
+            </div>
           </CardContent>
         </Card>
       </div>
