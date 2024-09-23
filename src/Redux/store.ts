@@ -10,6 +10,7 @@ import authReducer from "./features/auth/Auth/AuthSlice";
 import bookingReducer from "./features/Booking/BookinasSlice";
 import forgotPasswordReducer from "./features/forgot_password/Forgot_Password_Slice";
 import updateUserReducer from "./features/auth/Auth/Auth.Update.User.Slice";
+import findCarReducer from "./features/Car_Find/Car_find_slice";
 
 import {
   persistStore,
@@ -41,6 +42,7 @@ export const store = configureStore({
     booking: bookingReducer,
     forgotPassword: forgotPasswordReducer,
     updateUser: updateUserReducer,
+    car_find: findCarReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

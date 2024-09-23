@@ -10,7 +10,7 @@ const paymentCar = baseApi.injectEndpoints({
           body: { id },
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
+            // "Content-Type": "application/json",
           },
         };
       },

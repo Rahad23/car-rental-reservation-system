@@ -142,7 +142,6 @@ const Create_Car = () => {
             title: "Car make successfully!",
             description: getCurrentFormattedDate(),
             style: { background: "#7af59b", color: "#2D3A4B" },
-            
           });
         }
       }

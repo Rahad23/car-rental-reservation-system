@@ -34,13 +34,6 @@ const Booking_Management = () => {
               <DropdownMenuShortcut>⇧⌘R_C</DropdownMenuShortcut>
             </DropdownMenuItem>
           </Link>
-          <DropdownMenuItem>
-            <MdDirectionsCarFilled className="mr-2 h-4 w-4" />
-            <Link to={"manage-booking"}>
-              <span>Manage Booking</span>
-            </Link>
-            <DropdownMenuShortcut>⇧⌘M_B</DropdownMenuShortcut>
-          </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
       </DropdownMenuContent>

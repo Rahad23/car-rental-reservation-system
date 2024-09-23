@@ -3,12 +3,14 @@ import All_Cars_Admin from "@/AVIS_Dashboard/All_Cars/All_Cars_Admin";
 import Cars_Edit from "@/AVIS_Dashboard/All_Cars/Cars_Edit";
 import Avis_Dashboard from "@/AVIS_Dashboard/Avis_home/Avis_Dash_Board/Avis_Dashboard";
 import Avis_home from "@/AVIS_Dashboard/Avis_home/Avis_home";
+import User_Management from "@/AVIS_Dashboard/Avis_home/User_Management/User_Management";
 import Create_Car from "@/AVIS_Dashboard/Create_Car/Create_Car";
 import ManageBookings from "@/AVIS_Dashboard/MangeBookings/ManageBookings";
 import Return_Car from "@/AVIS_Dashboard/Return_Car/Return_Car";
 import Main from "@/components/layout/Main";
 import AboutUS from "@/pages/AboutUS/AboutUS";
 import Booking_Car from "@/pages/booking_page/Booking_Car";
+import Booking_with_search from "@/pages/booking_with_search/Booking_with_search";
 import All_Cars from "@/pages/Cars__/all_cars/All_Cars";
 import Car_Details from "@/pages/Cars__/car_details/Car_Details";
 import Car_with_category from "@/pages/Cars__/car_with_category/Car_with_category";
@@ -64,6 +66,14 @@ const router = createBrowserRouter([
             ),
           },
           {
+            path: "users-management",
+            element: (
+              <OnlyAdmin>
+                <User_Management />
+              </OnlyAdmin>
+            ),
+          },
+          {
             path: "all_cars",
             element: (
               <OnlyAdmin>
@@ -100,6 +110,10 @@ const router = createBrowserRouter([
           {
             path: "bookings/:id",
             element: <Booking_Car />,
+          },
+          {
+            path: "booking-car",
+            element: <Booking_with_search />,
           },
         ],
       },

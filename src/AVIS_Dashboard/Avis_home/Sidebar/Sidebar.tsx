@@ -2,6 +2,8 @@ import { Card, CardContent } from "@/components/ui/card";
 
 import Car_Management from "../Car_Management/Car_Management";
 import Booking_Management from "../Order_Management/Booking_Management";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const Sidebar = () => {
   return (
@@ -15,6 +17,13 @@ const Sidebar = () => {
             <li className="text-lg font-semibold lg:w-full w-[80%] mx-auto">
               <Booking_Management />
             </li>
+            <Link className="" to={"users-management"}>
+              <li className="text-lg font-semibold lg:w-full w-[80%] mx-auto">
+                <Button className="bg-[#D4002A] hover:bg-[#D4002A] w-full py-1 px-1 text-xl rounded-none text-[#fff] hover:text-[#fff] font-semibold hover:border-[1px] hover:border-[#ffffff] capitalize">
+                  Users management
+                </Button>
+              </li>
+            </Link>
           </ul>
         </CardContent>
       </Card>

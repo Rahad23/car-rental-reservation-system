@@ -1,0 +1,6 @@
+.card-img {
+  background-image: url("../../../assets/cars/bg-11.webp");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
