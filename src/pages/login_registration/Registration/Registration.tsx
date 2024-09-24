@@ -255,7 +255,7 @@ const Registration = () => {
                   Accept{" "}
                 </label>
               </span>
-              <Link to={"/"}>
+              <Link to={"/termsOfService"}>
                 {" "}
                 <span className="text-blue-800 border-b-[1px] border-blue-700">
                   Terms And Conditions

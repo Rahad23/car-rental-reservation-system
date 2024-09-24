@@ -15,8 +15,10 @@ import All_Cars from "@/pages/Cars__/all_cars/All_Cars";
 import Car_Details from "@/pages/Cars__/car_details/Car_Details";
 import Car_with_category from "@/pages/Cars__/car_with_category/Car_with_category";
 import Cars_Home from "@/pages/Cars__/cars_home/Cars_Home";
+import Contact from "@/pages/Contact/Contact";
 import Error_page from "@/pages/Error_page/Error_page";
 import Forgot_password from "@/pages/forgot_password/Forgot_password";
+import ServiceOfTerms from "@/pages/ServiceOfTerms/ServiceOfTerms";
 import BookingHistory from "@/pages/user_dashboard/BookingHistory/BookingHistory";
 import User_profile from "@/pages/user_dashboard/Profile/User_profile";
 import CheckLogin from "@/ProtectedRoute/CheckLogin";
@@ -133,6 +135,14 @@ const router = createBrowserRouter([
             <BookingHistory />
           </CheckLogin>
         ),
+      },
+      {
+        path: "/contact",
+        element: <Contact />,
+      },
+      {
+        path: "/termsOfService",
+        element: <ServiceOfTerms />,
       },
     ],
   },

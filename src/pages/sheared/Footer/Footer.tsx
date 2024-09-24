@@ -10,7 +10,7 @@ const Footer = () => {
         <div className="flex items-center justify-center space-x-4">
           <div className="flex gap-x-4">
             <Link
-              to="/"
+              to="/termsOfService"
               className="font-semibold text-gray-400 hover:text-gray-100 transition-colors"
             >
               <span className="">Terms of Service</span>
@@ -19,13 +19,7 @@ const Footer = () => {
               to="/"
               className="font-semibold text-gray-400 hover:text-gray-100 transition-colors"
             >
-              <span className="">Contact information</span>
-            </Link>
-            <Link
-              to="/"
-              className="font-semibold text-gray-400 hover:text-gray-100 transition-colors"
-            >
-              <span className="">Contact information</span>
+              <span className="">privacy policy</span>
             </Link>
           </div>
           <a
