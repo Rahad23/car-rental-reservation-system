@@ -5,7 +5,7 @@ import Avis_Dashboard from "@/AVIS_Dashboard/Avis_home/Avis_Dash_Board/Avis_Dash
 import Avis_home from "@/AVIS_Dashboard/Avis_home/Avis_home";
 import User_Management from "@/AVIS_Dashboard/Avis_home/User_Management/User_Management";
 import Create_Car from "@/AVIS_Dashboard/Create_Car/Create_Car";
-import ManageBookings from "@/AVIS_Dashboard/MangeBookings/ManageBookings";
+
 import Return_Car from "@/AVIS_Dashboard/Return_Car/Return_Car";
 import Main from "@/components/layout/Main";
 import AboutUS from "@/pages/AboutUS/AboutUS";
@@ -57,14 +57,7 @@ const router = createBrowserRouter([
               </OnlyAdmin>
             ),
           },
-          {
-            path: "manage-booking",
-            element: (
-              <OnlyAdmin>
-                <ManageBookings />
-              </OnlyAdmin>
-            ),
-          },
+
           {
             path: "users-management",
             element: (

@@ -1,89 +1,231 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-// import Autoplay from "embla-carousel-autoplay";
+import { MultiSelect } from "react-multi-select-component";
+
+import "../booking_with_search/booking_with_search_style/Booking_with_search_style.css";
+
+import Find_Cars_Card from "../booking_with_search/Find_Cars_Card";
 import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
+  useGetCarFeatureQuery,
+  useGetCarTypeQuery,
+} from "@/Redux/features/Cars/Cars";
+import { useDispatch } from "react-redux";
+import { useAppSelector } from "@/Redux/hook";
+import { RootState } from "@/Redux/store";
+import { useFindCarMutation } from "@/Redux/features/Car_Find/Car_find";
+import { useState } from "react";
+import {
+  resetCarFindDataState,
+  setCarFeatures,
+  setCarTypes,
+} from "@/Redux/features/Car_Find/Car_find_slice";
+import { Card, CardContent } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import SelectFieldLoading from "@/Loading_Spinners/SelectFieldLoading/SelectFieldLoading";
+import LoadingButton from "@/Loading_Spinners/LoadingButton/LoadingButton";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
+import { getCurrentFormattedDate } from "@/formatedCurrentTimes/TimeFormate";
 
-import "aos/dist/aos.css";
-import { Link } from "react-router-dom";
-import car1 from "../../assets/cars/car1.jpg";
+interface TCarCategoryType {
+  isDeleted: boolean;
+  type: string;
+  _id: string;
+}
+interface TCarFeaturesType {
+  isDeleted: boolean;
+  feature: string;
+  _id: string;
+}
 
-import AOS from "aos";
-import "aos/dist/aos.css"; // You can also use <link> for styles
-// ..
-AOS.init();
+type TFindCarCategory = {
+  isDeleted: boolean;
+  type: string;
+  _id: string;
+};
 
-const Hero_section = () => {
-  const data = [
-    {
-      _id: 1,
-      ad_img: car1,
-      carType: "Hybrid",
-      model: "ZDV33",
-      price: 500,
-    },
-  ];
+type TFindCars = {
+  _id: string;
+  car_image: string;
+  category: TFindCarCategory;
+  color: string;
+  description: string;
+  features: string[];
+  isDeleted: boolean;
+  isElectric: boolean;
+  name: string;
+  pricePerHour: string;
+  status: "available" | "unavailable";
+  type: string;
+};
+
+const Search_Form = () => {
+  const { data: featuresData, isLoading: getFeatureLoading } =
+    useGetCarFeatureQuery(undefined);
+  const { data: carTypeData, isLoading: getCarTypeLoading } =
+    useGetCarTypeQuery(undefined);
+  const dispatch = useDispatch();
+  const authData = useAppSelector((state: RootState) => state.auth);
+  const carFind = useAppSelector((state: RootState) => state.car_find);
+  const { toast } = useToast();
+  const [findCar, { isLoading: findCarLoading }] = useFindCarMutation();
+
+  const [selected, setSelected] = useState<{ value: string; label: string }[]>(
+    []
+  );
+  const [selectedFeatured, setSelectedFeatured] = useState<
+    { value: string; label: string }[]
+  >([]);
+
+  const [findCars_, setFindCars_] = useState([]);
+  const [visibleFindCars, setVisibleFindCars] = useState(false);
+  //custom data set in react multiple select field
+  const customStrings = {
+    allItemsAreSelected: "Selected All",
+    selectSomeItems: "Select ...",
+    search: "Search...",
+    clearSearch: "Clear search",
+    // You can override more messages here
+  };
+
+  //1
+  const options =
+    carTypeData?.data
+      ?.filter((carType: TCarCategoryType) => !carType?.isDeleted)
+      ?.map((carType: TCarCategoryType) => ({
+        label: carType.type,
+        value: carType.type,
+      })) || [];
+
+  //2
+  const optionsCarFeatures =
+    featuresData?.data
+      ?.filter((carFeatures: TCarFeaturesType) => !carFeatures?.isDeleted)
+      ?.map((carFeatures: TCarFeaturesType) => ({
+        label: carFeatures.feature,
+        value: carFeatures.feature,
+      })) || [];
+
+  //const handle multiple featured
+  const handleMultipleType = (e: { value: string; label: string }[]) => {
+    const selectedValues = e?.map(
+      (option: { value: string; label: string }) => option.value
+    );
+    dispatch(setCarTypes(selectedValues));
+    setSelected(e);
+  };
+
+  //const handle multiple featured
+  const handleMultipleFeatured = (e: { value: string; label: string }[]) => {
+    const selectedValues = e?.map(
+      (option: { value: string; label: string }) => option.value
+    );
+    dispatch(setCarFeatures(selectedValues));
+    setSelectedFeatured(e);
+  };
+
+  //handle find car
+  const handleFindCars = async () => {
+    setFindCars_([]);
+    const result = await findCar({ payload: carFind, token: authData.token });
+    if (result?.data?.success) {
+      if (result?.data?.data?.length > 0) {
+        setFindCars_(result?.data?.data);
+        setVisibleFindCars(true);
+      } else {
+        toast({
+          title: "No Car Found",
+          description: getCurrentFormattedDate(),
+          style: { background: "#dc2626", color: "#fff" },
+        });
+      }
+
+      dispatch(resetCarFindDataState());
+      setSelected([]);
+      setSelectedFeatured([]);
+    }
+  };
+
+  const clearFilterCarsData = () => {
+    setVisibleFindCars(false);
+    setFindCars_([]);
+  };
 
   return (
-    <div className="px-7 lg:px-0">
-      <Carousel
-        className=" overflow-hidden shadow-lg rounded-none mx-auto w-[85%] mt-3"
-        // plugins={[
-        //   Autoplay({
-        //     delay: 6000,
-        //   }),
-        // ]}
+    <div className="px-24 mt-2 relative">
+      <Card className="card-img rounded-none h-72">
+        <CardContent className="">
+          <div className="mt-5 grid grid-cols-2 justify-center gap-x-5">
+            <div>
+              <Label htmlFor="type" className="text-[#fff]  text-lg">
+                Car Type
+              </Label>
+              {getCarTypeLoading ? (
+                <SelectFieldLoading />
+              ) : (
+                <MultiSelect
+                  options={options}
+                  value={selected}
+                  onChange={handleMultipleType}
+                  labelledBy="Select Car Type"
+                  overrideStrings={customStrings}
+                />
+              )}
+            </div>
+            <div>
+              <Label htmlFor="features" className="text-[#fff] text-lg">
+                Car Features
+              </Label>
+              {getFeatureLoading ? (
+                <SelectFieldLoading />
+              ) : (
+                <MultiSelect
+                  options={optionsCarFeatures}
+                  value={selectedFeatured}
+                  onChange={handleMultipleFeatured}
+                  labelledBy="Select Car Features"
+                  overrideStrings={customStrings}
+                />
+              )}
+            </div>
+          </div>
+          <div className="mt-6 flex justify-center w-full">
+            {findCarLoading ? (
+              <LoadingButton message="Wait" />
+            ) : visibleFindCars ? (
+              <Button
+                onClick={clearFilterCarsData}
+                className="bg-[#D4002A] hover:bg-[#D4002A] w-60 text-lg"
+              >
+                Clear Filter
+              </Button>
+            ) : (
+              <Button
+                disabled={
+                  carFind.carFeatures.length === 0 ||
+                  carFind.carType.length === 0
+                }
+                onClick={handleFindCars}
+                className="bg-[#D4002A] hover:bg-[#D4002A] w-60 text-lg"
+              >
+                Find Car
+              </Button>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      <div
+        className={
+          !visibleFindCars
+            ? "hidden"
+            : "flex flex-col gap-y-3 h-[650px] w-full bg-[#ddd] px-5 overflow-y-scroll no-scrollbar absolute top-44"
+        }
       >
-        <CarouselContent>
-          {data?.map((slider) => (
-            <CarouselItem key={slider._id} className="min-w-full">
-              <Card className="bg-transparent">
-                <CardContent className="flex items-center justify-center h-[300px] lg:h-[500px] p-0 relative">
-                  <img
-                    src={slider?.ad_img}
-                    className="w-full  object-cover transition-transform duration-500 hover:scale-105"
-                    alt=""
-                  />
-                  <div
-                    data-aos="fade-right"
-                    className="absolute top-[30%] lg:left-56 left-16 w-[700px]"
-                  >
-                    <div className="bg-[#D4002A] py-5 px-9 rounded-lg">
-                      <h4 className="capitalize lg:text-xl text-base font-bold text-[#fff]">
-                        Type: {slider?.carType}
-                      </h4>
-                      <h1 className="capitalize lg:text-xl text-base font-bold text-[#fff]">
-                        Model: {slider?.model}
-                      </h1>
-                      <h1 className="capitalize lg:text-xl text-base font-bold text-[#fff]">
-                        Price: {slider?.price}.TK
-                      </h1>
-                      <Link to={`/`}>
-                        <Button className="lg:mt-10 mt-14  w-56 h-14 rounded-sm text-xl shadow-xl">
-                          Book Now
-                        </Button>
-                      </Link>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        <CarouselPrevious className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white bg-black bg-opacity-50 p-2 rounded-full cursor-pointer hover:bg-opacity-75 transition-opacity duration-300 hidden">
-          &#9664;
-        </CarouselPrevious>
-        <CarouselNext className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white bg-black bg-opacity-50 p-2 rounded-full cursor-pointer hover:bg-opacity-75 transition-opacity duration-300 hidden">
-          &#9654;
-        </CarouselNext>
-      </Carousel>
+        {findCars_?.map((data: TFindCars) => (
+          <Find_Cars_Card key={data?._id} payload={data} />
+        ))}
+      </div>
     </div>
   );
 };
 
-export default Hero_section;
+export default Search_Form;

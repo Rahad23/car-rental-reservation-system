@@ -25,7 +25,7 @@ const Bookings = baseApi.injectEndpoints({
           },
         };
       },
-      invalidatesTags: ["booking"],
+      invalidatesTags: ["booking", "car"],
     }),
     cancelRentCar: builder.mutation({
       query: ({ id, token }) => {

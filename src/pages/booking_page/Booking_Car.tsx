@@ -5,7 +5,6 @@ import "react-datetime-picker/dist/DateTimePicker.css";
 import "react-calendar/dist/Calendar.css";
 import "react-clock/dist/Clock.css";
 import "./Booking_Car.style.css";
-import { Button } from "@/components/ui/button";
 import { useParams } from "react-router-dom";
 import { useGetSingleCarQuery } from "@/Redux/features/Cars/Cars";
 import { PhotoProvider, PhotoView } from "react-photo-view";
@@ -30,6 +29,7 @@ import { useToast } from "@/hooks/use-toast";
 import { getCurrentFormattedDate } from "@/formatedCurrentTimes/TimeFormate";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import Confirmation_Dialog from "./Confirmation_Dialog";
 type ValuePiece = Date | null;
 
 type Value = ValuePiece | [ValuePiece, ValuePiece];
@@ -164,7 +164,7 @@ const Booking_Car = () => {
             </PhotoProvider>
             <div>
               <h1 className="capitalize text-md font-semibold text-[#101316]">
-                Category:{" "}
+                Type:{" "}
                 <span className="text-[#2D3A4B] font-bold">
                   {data?.data.category?.type}
                 </span>
@@ -294,12 +294,10 @@ const Booking_Car = () => {
             {bookingLoading ? (
               <LoadingButton message="Wait" />
             ) : (
-              <Button
-                onClick={handleBookings}
-                className="bg-[#D4002A] hover:bg-[#D4002A]"
-              >
-                Book Now
-              </Button>
+              <Confirmation_Dialog
+                handleBookings={handleBookings}
+                data={data?.data}
+              />
             )}
           </div>
         </CardContent>

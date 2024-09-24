@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import Featured_Cars_Pagination from "./Featured_Cars_Pagination";
+// import Featured_Cars_Pagination from "./Featured_Cars_Pagination";
 import { useGetCarsQuery } from "@/Redux/features/Cars/Cars";
 import { TCar } from "./Featured_Cars_Type";
 import LoadingSpenar from "@/Loading_Spinners/LoadingSpenar/LoadingSpenar";
@@ -9,65 +9,6 @@ const Featured_Cars = () => {
   const { data, isLoading: featuredDataLoading } = useGetCarsQuery({
     search: "",
   });
-  // const data = [
-  //   {
-  //     _id: 1,
-  //     ad_img: car1,
-  //     carType: "Hybrid",
-  //     model: "ZDV33",
-  //     price: 500,
-  //   },
-  //   {
-  //     _id: 2,
-  //     ad_img: car2,
-  //     carType: "Sedan",
-  //     model: "a49D",
-  //     price: 300,
-  //   },
-  //   {
-  //     _id: 3,
-  //     ad_img: car2,
-  //     carType: "Sedan",
-  //     model: "a49D",
-  //     price: 300,
-  //   },
-  //   {
-  //     _id: 4,
-  //     ad_img: car2,
-  //     carType: "Sedan",
-  //     model: "a49D",
-  //     price: 300,
-  //   },
-  //   {
-  //     _id: 5,
-  //     ad_img: car2,
-  //     carType: "Sedan",
-  //     model: "a49D",
-  //     price: 300,
-  //   },
-  //   {
-  //     _id: 6,
-  //     ad_img: car2,
-  //     carType: "Sedan",
-  //     model: "a49D",
-  //     price: 300,
-  //   },
-  //   {
-  //     _id: 7,
-  //     ad_img: car2,
-  //     carType: "Sedan",
-  //     model: "a49D",
-  //     price: 300,
-  //   },
-  //   {
-  //     _id: 8,
-  //     ad_img: car2,
-  //     carType: "Sedan",
-  //     model: "a49D",
-  //     price: 300,
-  //   },
-  // ];
-
   return featuredDataLoading ? (
     <LoadingSpenar />
   ) : (
@@ -94,20 +35,28 @@ const Featured_Cars = () => {
                 </h1>
               </div>
             </CardContent>
-            <Link
-              to={`/avis_cars/category/${data?.category?._id}`}
-              className="flex justify-center items-center"
-            >
-              <Button className="bg-[#D4002A] hover:bg-[#D4002A] text-lg">
-                View
-              </Button>
-            </Link>
+            {data?.status === "available" ? (
+              <Link
+                to={`/avis_cars/category/${data?.category?._id}`}
+                className="flex justify-center items-center"
+              >
+                <Button className="bg-[#D4002A] hover:bg-[#D4002A] text-lg">
+                  View
+                </Button>
+              </Link>
+            ) : (
+              <div className="flex justify-center">
+                <Button className="bg-[#D4002A] hover:bg-[#D4002A] text-lg">
+                  Booked
+                </Button>
+              </div>
+            )}
           </Card>
         ))}
       </div>
-      <div className="mt-7">
+      {/* <div className="mt-7">
         <Featured_Cars_Pagination />
-      </div>
+      </div> */}
     </div>
   );
 };

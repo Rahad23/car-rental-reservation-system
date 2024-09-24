@@ -20,6 +20,21 @@ import { useToast } from "@/hooks/use-toast";
 import { getCurrentFormattedDate } from "@/formatedCurrentTimes/TimeFormate";
 import { setIsOpen } from "@/Redux/features/auth/Login/LoginFormSlice";
 import { useNavigate } from "react-router-dom";
+
+interface ErrorSource {
+  message: string;
+  path: string; // Adjust the type and property name as per your actual data structure
+}
+
+interface ErrorResponse {
+  data: {
+    errorSources: ErrorSource[];
+    message: string;
+    stack: string;
+  };
+  success: boolean;
+}
+
 const Forgot_password = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -40,6 +55,7 @@ const Forgot_password = () => {
 
       if (resultValidation) {
         const result = await forgotPassword(forgotPasswordData);
+
         if (result?.data?.success) {
           dispatch(resetPasswordForgotState());
           setPassword("");
@@ -51,6 +67,15 @@ const Forgot_password = () => {
             style: { background: "#7af59b", color: "#2D3A4B" },
           });
           navigate("/");
+        }
+
+        if (result?.error) {
+          const errorData = result?.error as ErrorResponse;
+          toast({
+            title: errorData.data?.message,
+            description: getCurrentFormattedDate(),
+            style: { background: "#dc2626", color: "#fff" },
+          });
         }
       }
     } catch (e) {

@@ -18,6 +18,8 @@ import { useState } from "react";
 import RadioButton_Pending_Approve from "./RadioButton_Pending_Approve";
 import { Button } from "@/components/ui/button";
 import CancelDialog from "./CancelDialog/CancelDialog";
+import { usePaymentReturnCarMutation } from "@/Redux/features/payment/Payment";
+import LoadingButton from "@/Loading_Spinners/LoadingButton/LoadingButton";
 
 type Car = {
   car_image: string;
@@ -58,15 +60,28 @@ interface CarBooking {
 const BookingHistory = () => {
   const authData = useAppSelector((state: RootState) => state.auth);
   const [pendingApprove, setPendingApprove] = useState("pending");
-  // const { data, isLoading: getAllBookingsLoading } = useGetAllBookingsQuery({
-  //   token: authData.token,
-  // });
+
   const { data, isLoading: getUserBookingLoading } = useGetUserBookingsQuery({
     token: authData.token,
   });
 
-  console.log(data?.data?.approveBooking);
-  console.log(data?.data?.pendingBooking);
+  const [carId, setCarId] = useState("");
+  const [paymentReturnCar, { isLoading: paymentLoading }] =
+    usePaymentReturnCarMutation();
+
+  //handle payment
+  const handlePayment = async (id: string) => {
+    setCarId(id);
+    console.log("hit payment");
+    const result = await paymentReturnCar({
+      id,
+      token: authData.token,
+    });
+
+    if (result?.data?.data?.result === "true") {
+      window.location.href = result?.data?.data?.payment_url;
+    }
+  };
 
   function formatStartTime(isoString: string) {
     const date = new Date(isoString);
@@ -111,7 +126,7 @@ const BookingHistory = () => {
                 <TableHead>Feature</TableHead>
                 <TableHead>Booking Date</TableHead>
                 <TableHead>Start Time</TableHead>
-                <TableHead className="text-right">Action</TableHead>
+                <TableHead className="text-right">Total Coast</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -134,13 +149,7 @@ const BookingHistory = () => {
                     <TableCell>{car?.date}</TableCell>
                     <TableCell>{formatStartTime(car?.startTime)}</TableCell>
                     <TableCell className="text-right">
-                      {car?.isBooked === "confirmed" ? (
-                        <div>
-                          <Button className="bg-[#D4002A] hover:bg-[#D4002A]">
-                            Return
-                          </Button>
-                        </div>
-                      ) : car?.cancelRent ? (
+                      {car?.cancelRent ? (
                         <span className="text-red-600 font-semibold">
                           Canceled
                         </span>
@@ -169,11 +178,26 @@ const BookingHistory = () => {
                     <TableCell>{car?.date}</TableCell>
                     <TableCell>{formatStartTime(car?.startTime)}</TableCell>
                     <TableCell className="text-right">
-                      {car?.isBooked === "confirmed" && (
+                      {car?.totalCost === 0 ? (
                         <div>
-                          <Button className="bg-[#D4002A] hover:bg-[#D4002A]">
-                            Return
-                          </Button>
+                          {paymentLoading ? (
+                            car?._id === carId && (
+                              <LoadingButton message="Wait" />
+                            )
+                          ) : (
+                            <Button
+                              onClick={() => handlePayment(car?._id)}
+                              className="bg-[#D4002A] hover:bg-[#D4002A]"
+                            >
+                              Return
+                            </Button>
+                          )}
+                        </div>
+                      ) : (
+                        <div>
+                          <span className="text-red-600 font-semibold">
+                            {car?.totalCost}.TK
+                          </span>
                         </div>
                       )}
                     </TableCell>

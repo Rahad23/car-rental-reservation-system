@@ -74,7 +74,7 @@ const Search_Form = () => {
 
   const [findCars_, setFindCars_] = useState([]);
   const [carNotFoundMessage, setCarNotFoundMessage] = useState("");
-  console.log(findCars_);
+
   //custom data set in react multiple select field
   const customStrings = {
     allItemsAreSelected: "Selected All",

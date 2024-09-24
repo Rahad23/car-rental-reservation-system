@@ -85,11 +85,17 @@ const Car_Details = () => {
               </p>
             </div>
             <div className="mt-3 flex items-center gap-x-5">
-              <Link to={`/avis_cars/bookings/${id}`}>
+              {data?.data?.status === "available" ? (
+                <Link to={`/avis_cars/bookings/${id}`}>
+                  <Button className="capitalize bg-[#D4002A] hover:bg-[#D4002A] rounded-none mt-4 flex gap-x-2 items-center">
+                    Book-Now
+                  </Button>
+                </Link>
+              ) : (
                 <Button className="capitalize bg-[#D4002A] hover:bg-[#D4002A] rounded-none mt-4 flex gap-x-2 items-center">
-                  Book-Now
+                  Already Booked Chose Another
                 </Button>
-              </Link>
+              )}
             </div>
           </CardDescription>
         </CardDescription>
