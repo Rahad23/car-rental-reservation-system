@@ -14,9 +14,13 @@ import { RootState } from "@/Redux/store";
 import { useAppSelector } from "@/Redux/hook";
 import { useDispatch } from "react-redux";
 import {
+  resetCarFindDataState,
   setCarFeatures,
   setCarTypes,
 } from "@/Redux/features/Car_Find/Car_find_slice";
+import { useFindCarMutation } from "@/Redux/features/Car_Find/Car_find";
+import LoadingButton from "@/Loading_Spinners/LoadingButton/LoadingButton";
+import Find_Cars_Card from "./Find_Cars_Card";
 
 interface TCarCategoryType {
   isDeleted: boolean;
@@ -29,13 +33,37 @@ interface TCarFeaturesType {
   _id: string;
 }
 
+type TFindCarCategory = {
+  isDeleted: boolean;
+  type: string;
+  _id: string;
+};
+
+type TFindCars = {
+  _id: string;
+  car_image: string;
+  category: TFindCarCategory;
+  color: string;
+  description: string;
+  features: string[];
+  isDeleted: boolean;
+  isElectric: boolean;
+  name: string;
+  pricePerHour: string;
+  status: "available" | "unavailable";
+  type: string;
+};
+
 const Search_Form = () => {
   const { data: featuresData, isLoading: getFeatureLoading } =
     useGetCarFeatureQuery(undefined);
   const { data: carTypeData, isLoading: getCarTypeLoading } =
     useGetCarTypeQuery(undefined);
   const dispatch = useDispatch();
+  const authData = useAppSelector((state: RootState) => state.auth);
   const carFind = useAppSelector((state: RootState) => state.car_find);
+
+  const [findCar, { isLoading: findCarLoading }] = useFindCarMutation();
 
   const [selected, setSelected] = useState<{ value: string; label: string }[]>(
     []
@@ -44,6 +72,9 @@ const Search_Form = () => {
     { value: string; label: string }[]
   >([]);
 
+  const [findCars_, setFindCars_] = useState([]);
+  const [carNotFoundMessage, setCarNotFoundMessage] = useState("");
+  console.log(findCars_);
   //custom data set in react multiple select field
   const customStrings = {
     allItemsAreSelected: "Selected All",
@@ -89,6 +120,22 @@ const Search_Form = () => {
     setSelectedFeatured(e);
   };
 
+  //handle find car
+  const handleFindCars = async () => {
+    setFindCars_([]);
+    const result = await findCar({ payload: carFind, token: authData.token });
+    if (result?.data?.success) {
+      if (result?.data?.data?.length > 0) {
+        setFindCars_(result?.data?.data);
+      } else {
+        setCarNotFoundMessage("Not Found!");
+      }
+      dispatch(resetCarFindDataState());
+      setSelected([]);
+      setSelectedFeatured([]);
+    }
+  };
+
   return (
     <div>
       <Card className="card-img rounded-none">
@@ -128,17 +175,34 @@ const Search_Form = () => {
             </div>
           </div>
           <div className="mt-6 flex justify-center w-full">
-            <Button
-              disabled={
-                carFind.carFeatures.length === 0 || carFind.carType.length === 0
-              }
-              className="bg-[#D4002A] hover:bg-[#D4002A] w-60 text-lg"
-            >
-              Find Car
-            </Button>
+            {findCarLoading ? (
+              <LoadingButton message="Wait" />
+            ) : (
+              <Button
+                disabled={
+                  carFind.carFeatures.length === 0 ||
+                  carFind.carType.length === 0
+                }
+                onClick={handleFindCars}
+                className="bg-[#D4002A] hover:bg-[#D4002A] w-60 text-lg"
+              >
+                Find Car
+              </Button>
+            )}
           </div>
         </CardContent>
       </Card>
+      {findCars_?.length === 0 ? (
+        <h1 className="text-xl font-semibold mt-5 text-center">
+          {carNotFoundMessage ? carNotFoundMessage : "Find your favorite car"}
+        </h1>
+      ) : (
+        <div className="flex flex-col gap-y-3 h-[650px] overflow-y-scroll no-scrollbar">
+          {findCars_?.map((data: TFindCars) => (
+            <Find_Cars_Card key={data?._id} payload={data} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

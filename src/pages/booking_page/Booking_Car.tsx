@@ -15,8 +15,11 @@ import { useDispatch } from "react-redux";
 import { useAppSelector } from "@/Redux/hook";
 import { RootState } from "@/Redux/store";
 import {
+  resetBookingDataState,
   setCarId,
   setDate,
+  setDrivingLicense,
+  setPass_NID,
   setStartTime,
 } from "@/Redux/features/Booking/BookinasSlice";
 import { useBookingCarMutation } from "@/Redux/features/Booking/Booking";
@@ -25,6 +28,8 @@ import { z, ZodIssue } from "zod";
 import LoadingButton from "@/Loading_Spinners/LoadingButton/LoadingButton";
 import { useToast } from "@/hooks/use-toast";
 import { getCurrentFormattedDate } from "@/formatedCurrentTimes/TimeFormate";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 type ValuePiece = Date | null;
 
 type Value = ValuePiece | [ValuePiece, ValuePiece];
@@ -48,7 +53,10 @@ const Booking_Car = () => {
   const [value_, onChange_] = useState<Value>(new Date());
   const { id } = useParams();
   const authData = useAppSelector((state: RootState) => state.auth);
-  const { data, isLoading } = useGetSingleCarQuery({id, token: authData.token});
+  const { data, isLoading } = useGetSingleCarQuery({
+    id,
+    token: authData.token,
+  });
   const [zodError, setZodError] = useState<ZodIssue[]>([]);
   const { toast } = useToast();
   const dispatch = useDispatch();
@@ -56,7 +64,7 @@ const Booking_Car = () => {
   const [bookingCar, { isLoading: bookingLoading }] = useBookingCarMutation();
   const [time_, setTime] = useState("");
   const [timeSetError, setTimeSetError] = useState("");
-
+  const [seeMoreDescription, setSeeMoreDescription] = useState(false);
   useEffect(() => {
     if (value_) {
       if (id) {
@@ -102,6 +110,7 @@ const Booking_Car = () => {
         });
         if (result?.data?.success) {
           setTimeSetError("");
+          dispatch(resetBookingDataState());
           //success toast
           toast({
             title: "Order make successfully!",
@@ -193,16 +202,94 @@ const Booking_Car = () => {
               </h1>
             </div>
           </div>
-          <DateTimePicker
-            className={"custom-datetime-picker"}
-            onChange={onChange_}
-            value={value_}
-          />
-          <span className="text-red-600 text-sm flex flex-col gap-y-1">
-            {zodError?.find((err) => err.path[0] === "date")?.message}
-            {zodError?.find((err) => err.path[0] === "startTime")?.message}
-            {timeSetError && timeSetError}
-          </span>
+          <div className="mt-3">
+            <p className="font-semibold text-[#2D3A4B]">
+              {seeMoreDescription ? (
+                data?.data?.description?.length > 200 ? (
+                  <>
+                    {data?.data?.description?.slice(0, 200)}...{" "}
+                    <span
+                      onClick={() => setSeeMoreDescription(!seeMoreDescription)}
+                      style={{ color: "blue", cursor: "pointer" }}
+                    >
+                      See more
+                    </span>
+                  </>
+                ) : (
+                  data?.data?.description
+                )
+              ) : (
+                <p className={"font-semibold text-[#2D3A4B]"}>
+                  {data?.data?.description}{" "}
+                  <span
+                    className={
+                      data?.data?.description.length > 200
+                        ? `font-semibold text-[#2D3A4B] `
+                        : "hidden"
+                    }
+                    onClick={() => setSeeMoreDescription(!seeMoreDescription)}
+                    style={{ color: "red", cursor: "pointer" }}
+                  >
+                    See less
+                  </span>
+                </p>
+              )}
+            </p>
+          </div>
+          <div className="mt-5">
+            <div>
+              <div>
+                <Label htmlFor="passport/nid">
+                  Passport/NID<span className="text-red-600">*</span>
+                </Label>
+                <Input
+                  value={carBookingData.pass_nid}
+                  onChange={(e) => dispatch(setPass_NID(e.target.value))}
+                  type="text"
+                  id="passport/nid"
+                  placeholder="Passport/NID"
+                />
+                <span className="text-red-600 text-sm flex flex-col gap-y-1">
+                  {zodError?.find((err) => err.path[0] === "pass_nid")?.message}
+                </span>
+              </div>
+              <div>
+                <Label htmlFor="D.license">
+                  Driving License<span className="text-red-600">*</span>
+                </Label>
+                <Input
+                  value={carBookingData.driving_license}
+                  onChange={(e) => dispatch(setDrivingLicense(e.target.value))}
+                  type="text"
+                  id="D.license"
+                  placeholder="Driving License"
+                />
+                <span className="text-red-600 text-sm flex flex-col gap-y-1">
+                  {
+                    zodError?.find((err) => err.path[0] === "driving_license")
+                      ?.message
+                  }
+                </span>
+              </div>
+            </div>
+            <div className="mt-4 flex flex-col">
+              <Label className="mb-1">
+                Select Booking Date<span className="text-red-600">*</span>
+              </Label>
+              <DateTimePicker
+                className={"custom-datetime-picker"}
+                onChange={onChange_}
+                value={value_}
+                minDate={new Date()}
+              />
+              <span className="text-red-600 text-sm flex flex-col gap-y-1">
+                {zodError?.find((err) => err.path[0] === "date")?.message}{" "}
+                <br />
+                {zodError?.find((err) => err.path[0] === "startTime")?.message}
+                {timeSetError && timeSetError}
+              </span>
+            </div>
+          </div>
           <div className="mt-4">
             {bookingLoading ? (
               <LoadingButton message="Wait" />

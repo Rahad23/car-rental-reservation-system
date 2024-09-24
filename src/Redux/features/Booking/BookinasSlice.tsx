@@ -4,12 +4,16 @@ type TBooking = {
   carId: string;
   date: string;
   startTime: string;
+  driving_license: string;
+  pass_nid: string;
 };
 
 const initialState: TBooking = {
   carId: "",
   date: "",
   startTime: "",
+  driving_license: "",
+  pass_nid: "",
 };
 
 const carBookingSlice = createSlice({
@@ -25,6 +29,12 @@ const carBookingSlice = createSlice({
     setStartTime: (state, action: PayloadAction<string>) => {
       state.startTime = action.payload;
     },
+    setDrivingLicense: (state, action: PayloadAction<string>) => {
+      state.driving_license = action.payload;
+    },
+    setPass_NID: (state, action: PayloadAction<string>) => {
+      state.pass_nid = action.payload;
+    },
 
     resetBookingDataState() {
       return initialState; // Resets state to initial values
@@ -32,7 +42,13 @@ const carBookingSlice = createSlice({
   },
 });
 
-export const { setCarId, setDate, setStartTime, resetBookingDataState } =
-  carBookingSlice.actions;
+export const {
+  setCarId,
+  setDate,
+  setStartTime,
+  resetBookingDataState,
+  setDrivingLicense,
+  setPass_NID,
+} = carBookingSlice.actions;
 
 export default carBookingSlice.reducer;
