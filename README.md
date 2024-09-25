@@ -4,7 +4,7 @@
 
 ### From car-rental-reservation you can rent a car by the hour.
 
-### How to run car-rental-reservation server.
+### How to run car-rental-reservation frontend.
 
 ## 1. If you run ...**npm run dev**,
 
