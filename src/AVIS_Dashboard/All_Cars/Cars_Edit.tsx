@@ -358,7 +358,7 @@ const Car_Edit = () => {
               id="description"
               placeholder="Description"
             />
-            <span className="text-red-600 text-sm">
+            <span className="text-red-600 text-sm ">
               {zodError?.find((err) => err.path[0] === "description")?.message}
             </span>
           </div>

@@ -47,6 +47,7 @@ const ProfileEditDialog: React.FC<TProfileEditDialogProps> = ({
   const [zodError, setZodError] = useState<ZodIssue[]>([]);
   const [value, setValue] = useState<E164Number | undefined>("");
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [editProfileLoading, setEditProfileLoading] = useState(false);
   const dispatch = useDispatch();
   //   const authData = useAppSelector((state: RootState) => state.auth);
   const updateData = useAppSelector((state: RootState) => state.updateUser);
@@ -74,6 +75,7 @@ const ProfileEditDialog: React.FC<TProfileEditDialogProps> = ({
   }, [value, dispatch]);
 
   const handleUpdate = async () => {
+    setEditProfileLoading(true);
     try {
       const resultValidation = updateUserDataSchema.parse(updateData);
 
@@ -101,10 +103,13 @@ const ProfileEditDialog: React.FC<TProfileEditDialogProps> = ({
             setModalIsOpen(false);
             setOpenDropdown(false);
             setProfileImg(null);
+            setEditProfileLoading(false);
+            window.location.reload();
           }
         }
       }
     } catch (e) {
+      setEditProfileLoading(false);
       if (e instanceof z.ZodError) {
         setZodError(e.errors);
       } else {
@@ -242,7 +247,7 @@ const ProfileEditDialog: React.FC<TProfileEditDialogProps> = ({
           </div>
         </DialogHeader>
         <DialogFooter>
-          {updateUserLoading ? (
+          {updateUserLoading || editProfileLoading ? (
             <LoadingButton message="Wait.." />
           ) : (
             <Button

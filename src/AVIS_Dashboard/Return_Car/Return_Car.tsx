@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -9,15 +8,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import LoadingButton from "@/Loading_Spinners/LoadingButton/LoadingButton";
 import LoadingSpenar from "@/Loading_Spinners/LoadingSpenar/LoadingSpenar";
 import { useGetAllBookingsQuery } from "@/Redux/features/Booking/Booking";
-import { usePaymentReturnCarMutation } from "@/Redux/features/payment/Payment";
 import { useAppSelector } from "@/Redux/hook";
 import { RootState } from "@/Redux/store";
 import CancelRentDialog from "./AleartDialog/CancelRentDialog";
 import ConfirmRentDialog from "./AleartDialog/ConfirmRentDialog";
-import { useState } from "react";
+import ReturnCarModal from "@/pages/user_dashboard/BookingHistory/ReturnCarModal";
 
 type Car = {
   car_image: string;
@@ -60,22 +57,8 @@ const Return_Car = () => {
   const { data, isLoading: getAllBookingsLoading } = useGetAllBookingsQuery({
     token: authData.token,
   });
-  const [carId, setCarId] = useState("");
-  const [paymentReturnCar, { isLoading: paymentLoading }] =
-    usePaymentReturnCarMutation();
 
-  //handle payment
-  const handlePayment = async (id: string) => {
-    setCarId(id);
-    const result = await paymentReturnCar({
-      id,
-      token: authData.token,
-    });
-
-    if (result?.data?.data?.result === "true") {
-      window.location.href = result?.data?.data?.payment_url;
-    }
-  };
+  //handle pa
 
   //formated time
   function formatStartTime(isoString: string) {
@@ -141,20 +124,13 @@ const Return_Car = () => {
                   <div>{car?.totalCost}.TK</div>
                 ) : (
                   <div>
-                    {paymentLoading && car?._id === carId ? (
-                      <LoadingButton message="Redirect payment..." />
-                    ) : car.isBooked === "unconfirmed" ? (
+                    {car.isBooked === "unconfirmed" ? (
                       <div className="flex items-center justify-center gap-x-1">
                         <ConfirmRentDialog id={car?._id} />
                         <CancelRentDialog id={car?._id} />
                       </div>
                     ) : (
-                      <Button
-                        onClick={() => handlePayment(car._id)}
-                        className="bg-[#D4002A] hover:bg-[#D4002A]"
-                      >
-                        Return
-                      </Button>
+                      <ReturnCarModal carId={car?._id} />
                     )}
                   </div>
                 )}

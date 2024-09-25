@@ -18,8 +18,7 @@ import { useState } from "react";
 import RadioButton_Pending_Approve from "./RadioButton_Pending_Approve";
 import { Button } from "@/components/ui/button";
 import CancelDialog from "./CancelDialog/CancelDialog";
-import { usePaymentReturnCarMutation } from "@/Redux/features/payment/Payment";
-import LoadingButton from "@/Loading_Spinners/LoadingButton/LoadingButton";
+import ReturnCarModal from "./ReturnCarModal";
 
 type Car = {
   car_image: string;
@@ -65,23 +64,19 @@ const BookingHistory = () => {
     token: authData.token,
   });
 
-  const [carId, setCarId] = useState("");
-  const [paymentReturnCar, { isLoading: paymentLoading }] =
-    usePaymentReturnCarMutation();
-
   //handle payment
-  const handlePayment = async (id: string) => {
-    setCarId(id);
-    console.log("hit payment");
-    const result = await paymentReturnCar({
-      id,
-      token: authData.token,
-    });
+  // const handlePayment = async (id: string) => {
+  //   setCarId(id);
+  //   console.log("hit payment");
+  //   const result = await paymentReturnCar({
+  //     id,
+  //     token: authData.token,
+  //   });
 
-    if (result?.data?.data?.result === "true") {
-      window.location.href = result?.data?.data?.payment_url;
-    }
-  };
+  //   if (result?.data?.data?.result === "true") {
+  //     window.location.href = result?.data?.data?.payment_url;
+  //   }
+  // };
 
   function formatStartTime(isoString: string) {
     const date = new Date(isoString);
@@ -180,18 +175,15 @@ const BookingHistory = () => {
                     <TableCell className="text-right">
                       {car?.totalCost === 0 ? (
                         <div>
-                          {paymentLoading ? (
-                            car?._id === carId && (
-                              <LoadingButton message="Wait" />
-                            )
-                          ) : (
-                            <Button
-                              onClick={() => handlePayment(car?._id)}
-                              className="bg-[#D4002A] hover:bg-[#D4002A]"
-                            >
-                              Return
-                            </Button>
-                          )}
+                          {
+                            <ReturnCarModal carId={car?._id} />
+                            // <Button
+                            //   onClick={() => handlePayment(car?._id)}
+                            //   className="bg-[#D4002A] hover:bg-[#D4002A]"
+                            // >
+                            //   Return
+                            // </Button>
+                          }
                         </div>
                       ) : (
                         <div>

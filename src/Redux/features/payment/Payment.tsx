@@ -3,9 +3,11 @@ import { baseApi } from "@/Redux/api/baseApi";
 const paymentCar = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     paymentReturnCar: builder.mutation({
-      query: ({ id, token }) => {
+      query: ({ id, token, PType }) => {
+        const paymentRequestSend = `?PType=${PType}`;
+
         return {
-          url: "/payment",
+          url: `/payment${paymentRequestSend}`,
           method: "POST",
           body: { id },
           headers: {
