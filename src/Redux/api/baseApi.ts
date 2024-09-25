@@ -15,7 +15,7 @@ export const baseApi = createApi({
   //https://mission-3-assignment.vercel.app
   //local host: http://localhost:5000
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:5000/api/v1",
+    baseUrl: "https://mission-3-assignment.vercel.app/api/v1",
   }),
   //   endpoints: (builder) => ({
   //     getAllProduct: builder.query({
