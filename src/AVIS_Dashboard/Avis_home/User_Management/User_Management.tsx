@@ -48,7 +48,8 @@ const User_Management = () => {
 
   const [unblockUser, { isLoading: unblockUserLoading }] =
     useUnblockUserMutation();
-
+  const darkLight = useAppSelector((state: RootState) => state.darkLight);
+  const darkLight__ = darkLight.darkLight;
   const users = data && data?.data?.users;
   const admins = data && data?.data?.admins;
   const blockUsers = data && data?.data?.blockUsers;
@@ -118,12 +119,12 @@ const User_Management = () => {
       <LoadingSpenar />
     </div>
   ) : (
-    <div className="w-full px-10 mt-10">
-      <div className="flex justify-between">
+    <div className="w-full lg:px-10 px-2 mt-10 h-screen">
+      <div className="flex lg:justify-between justify-start flex-col lg:flex-row">
         <Search_user search={search} setSearch={setSearch} />
         <Switch_User_Data roll={roll} setRoll={setRoll} />
       </div>
-      <Table className="mt-7">
+      <Table className={darkLight__ ? "mt-7 text-white" : "mt-7"}>
         <TableCaption>A list of Users.</TableCaption>
         <TableHeader>
           <TableRow>

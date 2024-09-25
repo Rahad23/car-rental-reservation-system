@@ -62,6 +62,8 @@ const Search_Form = () => {
   const dispatch = useDispatch();
   const authData = useAppSelector((state: RootState) => state.auth);
   const carFind = useAppSelector((state: RootState) => state.car_find);
+  const darkLight = useAppSelector((state: RootState) => state.darkLight);
+  const darkLight__ = darkLight.darkLight;
 
   const [findCar, { isLoading: findCarLoading }] = useFindCarMutation();
 
@@ -128,7 +130,7 @@ const Search_Form = () => {
       if (result?.data?.data?.length > 0) {
         setFindCars_(result?.data?.data);
       } else {
-        setCarNotFoundMessage("Not Found!");
+        setCarNotFoundMessage("Not found your search features car!");
       }
       dispatch(resetCarFindDataState());
       setSelected([]);
@@ -193,7 +195,13 @@ const Search_Form = () => {
         </CardContent>
       </Card>
       {findCars_?.length === 0 ? (
-        <h1 className="text-xl font-semibold mt-5 text-center">
+        <h1
+          className={
+            darkLight__
+              ? "text-xl font-semibold mt-5 text-center text-gray-100"
+              : "text-xl font-semibold mt-5 text-center"
+          }
+        >
           {carNotFoundMessage ? carNotFoundMessage : "Find your favorite car"}
         </h1>
       ) : (

@@ -11,7 +11,7 @@ const Total_Revenue = () => {
   });
 
   return (
-    <div>
+    <div className="mx-auto">
       <h1 className="text-gray-950 font-semibold">Total Revenue</h1>
       <Card className="w-52 h-28 flex justify-center items-center mt-1">
         {isLoading ? (

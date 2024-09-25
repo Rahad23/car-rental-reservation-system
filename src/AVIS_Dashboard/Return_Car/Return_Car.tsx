@@ -101,7 +101,7 @@ const Return_Car = () => {
       <LoadingSpenar />
     </div>
   ) : (
-    <div className="px-10 w-full">
+    <div className="lg:px-10 px-2 lg:mt-0 w-full h-screen mt-10 ">
       <Table>
         <TableCaption>A list of your car booking.</TableCaption>
         <TableHeader>

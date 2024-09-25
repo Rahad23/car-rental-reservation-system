@@ -34,9 +34,9 @@ const Find_Cars_Card: React.FC<TFindCarsCardPropsType> = ({ payload }) => {
 
   return (
     <div>
-      <Card className="mx-auto w-[700px] mt-4">
+      <Card className="mx-auto lg:w-[700px] w-[300px] mt-4">
         <CardContent className="py-10 flex justify-center flex-col items-center">
-          <div className="flex flex-row gap-x-3">
+          <div className="flex lg:flex-row flex-col gap-x-3">
             <PhotoProvider>
               <PhotoView src={payload?.car_image}>
                 <img

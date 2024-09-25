@@ -26,9 +26,9 @@ const User_profile = () => {
       <LoadingSpenar />
     </div>
   ) : (
-    <div className="w-full px-10 mt-1">
+    <div className="w-full lg:px-10 px-2 mt-1">
       <div>
-        <Card className="rounded-none bg-[#ddd] w-[600px] mx-auto mt-5">
+        <Card className="rounded-none bg-[#ddd] lg:w-[600px] w-[350px] mx-auto mt-5">
           <CardContent className="relative">
             <div>
               <div className="flex flex-col items-center justify-center mt-4">

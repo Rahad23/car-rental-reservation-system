@@ -11,7 +11,7 @@ const Car_Category_Admin = () => {
   });
 
   return (
-    <div>
+    <div className="mx-auto">
       <h1 className="text-gray-950 font-semibold">Total Car Category</h1>
       <Card className="w-52 h-28 flex justify-center items-center mt-1">
         {isLoading ? (

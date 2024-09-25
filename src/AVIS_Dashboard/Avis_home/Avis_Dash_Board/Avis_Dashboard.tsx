@@ -7,7 +7,7 @@ import Total_Revenue from "./Total_Revenue";
 const Avis_Dashboard = () => {
   return (
     <div className="flex justify-center w-full  px-10 flex-col">
-      <div className="flex justify-center gap-x-6 mt-8">
+      <div className="lg:flex grid grid-cols-1 justify-center lg:gap-x-6 gap-x-2 mt-8">
         <Total_Bookings />
         <Available_Car />
         <Car_Category_Admin />

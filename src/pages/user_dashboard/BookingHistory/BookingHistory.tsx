@@ -106,7 +106,7 @@ const BookingHistory = () => {
       <LoadingSpenar />
     </div>
   ) : (
-    <div className="px-24">
+    <div className="lg:px-24 px-2 h-screen">
       <div>
         <RadioButton_Pending_Approve
           pendingApprove={pendingApprove}

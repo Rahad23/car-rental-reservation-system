@@ -1,12 +1,22 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { useAppSelector } from "@/Redux/hook";
+import { RootState } from "@/Redux/store";
 
 const Contact = () => {
+  const darkLight = useAppSelector((state: RootState) => state.darkLight);
+  const darkLight__ = darkLight.darkLight;
   return (
     <div className="h-screen mt-11">
-      <h1 className="text-xl font-semibold text-gray-950 text-center">
+      <h1
+        className={
+          darkLight__
+            ? "text-xl font-semibold text-gray-100 text-center px-24"
+            : "text-xl font-semibold text-gray-950 text-center px-24"
+        }
+      >
         Contact Information
       </h1>
-      <Card className="w-[700px] mx-auto">
+      <Card className="lg:w-[700px] w-[300px] mx-auto">
         <CardContent className="py-5">
           <ul className="flex flex-col gap-y-2">
             <li className="text-lg text-gray-950">

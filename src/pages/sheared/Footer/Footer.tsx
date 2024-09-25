@@ -1,8 +1,18 @@
+import { useAppSelector } from "@/Redux/hook";
+import { RootState } from "@/Redux/store";
 import { FaFacebook } from "react-icons/fa";
 import { Link } from "react-router-dom";
 const Footer = () => {
+  const darkLight = useAppSelector((state: RootState) => state.darkLight);
+  const darkLight__ = darkLight.darkLight;
   return (
-    <footer className="dark bg-gray-900 text-gray-200 py-6 mt-40">
+    <footer
+      className={
+        darkLight__
+          ? "dark bg-gray-900 text-gray-200 py-6 mt-40"
+          : "dark bg-gray-900 text-gray-200 py-6 mt-40"
+      }
+    >
       <div className="container mx-auto px-4 md:px-6 flex flex-col md:flex-row items-center justify-between">
         <div className="text-center md:text-left mb-4 md:mb-0">
           <p className="text-sm">© 2024 Eco-shop. All rights reserved.</p>
@@ -16,7 +26,7 @@ const Footer = () => {
               <span className="">Terms of Service</span>
             </Link>
             <Link
-              to="/"
+              to="/termsOfService"
               className="font-semibold text-gray-400 hover:text-gray-100 transition-colors"
             >
               <span className="">privacy policy</span>

@@ -17,13 +17,16 @@ import SortingWithType from "@/pages/Cars__/all_cars/SortingWithType";
 import SortingPrice from "@/pages/Cars__/all_cars/SortingPrice";
 import SortingPriceLowToHigh from "@/pages/Cars__/all_cars/SortingPriceLowToHigh";
 import { RxCross1 } from "react-icons/rx";
+import { RootState } from "@/Redux/store";
+import { useAppSelector } from "@/Redux/hook";
 
 const All_Cars_Admin = () => {
   const [search, setSearch] = useState("");
   const [priceSorting, setPriceSorting] = useState("");
   const [category, setCategory] = useState("");
   const [priceRange, setPriceRange] = useState("");
-
+  const darkLight = useAppSelector((state: RootState) => state.darkLight);
+  const darkLight__ = darkLight.darkLight;
   const { data, isLoading: carAllDataFetchLoading } = useGetCarsQuery({
     search,
     data: {
@@ -44,17 +47,16 @@ const All_Cars_Admin = () => {
       <LoadingSpenar />
     </div>
   ) : (
-    <div className="px-7 w-full">
-      <div className="mt-10 flex justify-between items-center">
+    <div className="lg:px-7 px-2 w-full">
+      <div className="mt-10 flex justify-start lg:justify-between lg:flex-row flex-col items-start lg:items-center">
         <Cars_Search setSearch={setSearch} search={search} />
-        <div className="flex justify-center gap-x-3 relative">
-          <div>
-            <div className="flex items-center">
-              <SortingWithType setCategory={setCategory} />
-              <SortingPrice setPriceRange={setPriceRange} />
-            </div>
-            <SortingPriceLowToHigh setPriceSorting={setPriceSorting} />
+        <div className="flex justify-center flex-col gap-x-3 relative mt-2 lg:mt-0">
+          <div className="flex items-start lg:items-center lg:flex-row flex-col">
+            <SortingWithType setCategory={setCategory} />
+            <SortingPrice setPriceRange={setPriceRange} />
           </div>
+          <SortingPriceLowToHigh setPriceSorting={setPriceSorting} />
+
           {priceSorting || category || priceRange ? (
             <RxCross1
               onClick={clearAllFilterField}
@@ -66,7 +68,7 @@ const All_Cars_Admin = () => {
           )}
         </div>
       </div>
-      <Table className="mt-8">
+      <Table className={darkLight__ ? "mt-8 text-white" : "mt-8 text-gray-950"}>
         <TableCaption>A list of your recent datas.</TableCaption>
         <TableHeader>
           <TableRow>

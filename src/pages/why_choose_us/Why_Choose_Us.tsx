@@ -4,8 +4,13 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { useAppSelector } from "@/Redux/hook";
+import { RootState } from "@/Redux/store";
 
 const Why_Choose_Us = () => {
+  const darkLight = useAppSelector((state: RootState) => state.darkLight);
+  const darkLight__ = darkLight.darkLight;
+
   const Data = [
     {
       _id: 1,
@@ -58,12 +63,24 @@ const Why_Choose_Us = () => {
   ];
 
   return (
-    <div className="px-24 mt-20">
-      <h1 className="text-2xl text-center mt-16 font-semibold">
+    <div className="lg:px-24 px-2 mt-20">
+      <h1
+        className={
+          darkLight__
+            ? "text-2xl text-gray-100 text-center mt-16 font-semibold"
+            : "text-2xl text-center mt-16 font-semibold"
+        }
+      >
         Why Choose Us?
       </h1>
 
-      <div className="w-[60%] mx-auto mt-10">
+      <div
+        className={
+          darkLight__
+            ? "w-[60%] mx-auto mt-10 text-gray-100"
+            : "w-[60%] mx-auto mt-10"
+        }
+      >
         <Accordion type="single" collapsible className="w-full">
           {Data.map((data) => (
             <AccordionItem key={data?._id} value={`item-${data?._id}`}>

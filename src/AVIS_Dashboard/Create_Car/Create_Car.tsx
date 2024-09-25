@@ -56,7 +56,8 @@ const Create_Car = () => {
   );
   const [carImgFile, setAdImgFile] = useState<File | null>(null);
   const [zodError, setZodError] = useState<ZodIssue[]>([]);
-
+  const darkLight = useAppSelector((state: RootState) => state.darkLight);
+  const darkLight__ = darkLight.darkLight;
   //custom data set in react multiple select field
   const customStrings = {
     allItemsAreSelected: "All features are selected.",
@@ -155,17 +156,29 @@ const Create_Car = () => {
   };
 
   return (
-    <div className="w-full px-14">
-      <h1 className="text-xl font-semibold mt-2 text-gray-950">Create Car</h1>
+    <div className="w-full lg:px-14 px-6 mt-3 lg:mt-0">
+      <h1
+        className={
+          darkLight__
+            ? "text-xl font-semibold mt-2 text-gray-100"
+            : "text-xl font-semibold mt-2 text-gray-950"
+        }
+      >
+        Create Car
+      </h1>
       <hr />
-      <div className="mt-9 grid grid-cols-1 gap-x-5 gap-y-3">
-        <div className="flex flex-row gap-x-3 w-full">
+      <div className={"mt-9 grid grid-cols-1 gap-x-5 gap-y-3"}>
+        <div className="flex flex-col lg:flex-row gap-x-3 w-full">
           <div className="w-full">
-            <Label htmlFor="name">Car Model</Label>
+            <Label
+              htmlFor="name"
+              className={darkLight__ ? "text-white" : "text-gray-950"}
+            >
+              Car Model
+            </Label>
             <Input
               value={carInputData.name}
               onChange={(e) => dispatch(setCarName(e.target.value))}
-              className=""
               id="name"
               type="text"
               placeholder="Car Name"
@@ -175,11 +188,15 @@ const Create_Car = () => {
             </span>
           </div>
           <div className="w-full">
-            <Label htmlFor="name">Car Color</Label>
+            <Label
+              htmlFor="name"
+              className={darkLight__ ? "text-white" : "text-gray-950"}
+            >
+              Car Color
+            </Label>
             <Input
               value={carInputData.color}
               onChange={(e) => dispatch(setCarColor(e.target.value))}
-              className=""
               type="text"
               placeholder="Car Color"
             />
@@ -188,13 +205,17 @@ const Create_Car = () => {
             </span>
           </div>
           <div className="w-full">
-            <Label htmlFor="price">Price Per Hour</Label>
+            <Label
+              htmlFor="price"
+              className={darkLight__ ? "text-white" : "text-gray-950"}
+            >
+              Price Per Hour
+            </Label>
 
             <Input
               value={carInputData.pricePerHour}
               onChange={(e) => dispatch(setPricePerHour(e.target.value))}
               id="price"
-              className=""
               type="number"
               placeholder="Car Price"
             />
@@ -203,9 +224,14 @@ const Create_Car = () => {
             </span>
           </div>
         </div>
-        <div className="flex flex-row gap-x-5">
+        <div className="flex flex-col lg:flex-row gap-x-5">
           <div className="w-full">
-            <Label htmlFor="type">Is The Car Electric?</Label>
+            <Label
+              htmlFor="type"
+              className={darkLight__ ? "text-white" : "text-gray-950"}
+            >
+              Is The Car Electric?
+            </Label>
             <Select onValueChange={handleSelectChange}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Is Electric?" />
@@ -213,10 +239,10 @@ const Create_Car = () => {
               <SelectContent>
                 <SelectGroup>
                   <SelectLabel>Select</SelectLabel>
-                  <SelectItem value="true" className="text-base">
+                  <SelectItem value="true" className="text-base text-black">
                     Yes
                   </SelectItem>
-                  <SelectItem value="false" className="text-base">
+                  <SelectItem value="false" className="text-base text-black">
                     No
                   </SelectItem>
                 </SelectGroup>
@@ -227,7 +253,12 @@ const Create_Car = () => {
             </span>
           </div>
           <div className="w-full">
-            <Label htmlFor="type">Features</Label>
+            <Label
+              htmlFor="type"
+              className={darkLight__ ? "text-white" : "text-gray-950"}
+            >
+              Features
+            </Label>
 
             {/* Multi select test */}
             {carFeaturesLoading ? (
@@ -249,7 +280,12 @@ const Create_Car = () => {
           </div>
           {/* select car type ------------------------------ */}
           <div className="w-full">
-            <Label htmlFor="type">Car Type</Label>
+            <Label
+              htmlFor="type"
+              className={darkLight__ ? "text-white" : "text-gray-950"}
+            >
+              Car Type
+            </Label>
             <Select onValueChange={handleSelectCarTypeChange}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select Car Type" />
@@ -280,7 +316,12 @@ const Create_Car = () => {
         </div>
         <div className="flex flex-row gap-x-3">
           <div className="w-[400px]">
-            <Label htmlFor="img">Car Image</Label>
+            <Label
+              htmlFor="img"
+              className={darkLight__ ? "text-white" : "text-gray-950"}
+            >
+              Car Image
+            </Label>
             <Input
               onChange={handleFileChange}
               type="file"
@@ -294,7 +335,12 @@ const Create_Car = () => {
         </div>
         <div className="flex flex-row gap-x-3">
           <div className="w-full">
-            <Label htmlFor="description">Description</Label>
+            <Label
+              htmlFor="description"
+              className={darkLight__ ? "text-white" : "text-gray-950"}
+            >
+              Description
+            </Label>
             <Textarea
               value={carInputData.description}
               onChange={(e) => dispatch(setCarDescription(e.target.value))}

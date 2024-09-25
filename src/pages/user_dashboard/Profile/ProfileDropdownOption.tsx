@@ -10,12 +10,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { User } from "lucide-react";
-
 import { useState } from "react";
 import { ImCross } from "react-icons/im";
 import { TbBrandBooking } from "react-icons/tb";
 import { Link } from "react-router-dom";
 import ProfileEditDialog from "./ProfileEditDialog";
+import { IoIosOptions } from "react-icons/io";
 interface TProfileEditDialogProps {
   profileImg: string;
 }
@@ -30,10 +30,14 @@ const ProfileDropdownOption: React.FC<TProfileEditDialogProps> = ({
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
-          className=" bg-[#D4002A] hover:bg-[#D4002A] hover:text-white text-white font-semibold "
+          className=" bg-[#D4002A] hover:bg-[#D4002A]  hover:text-white lg
+        text-white font-semibold"
           onClick={() => setOpenDropdown(true)}
         >
-          Management
+          <span className="lg:hidden block">
+            <IoIosOptions className="text-xl" />
+          </span>
+          <span className="lg:block hidden">Management</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">

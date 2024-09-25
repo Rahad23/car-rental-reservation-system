@@ -10,13 +10,16 @@ import SortingPriceLowToHigh from "./SortingPriceLowToHigh";
 import SortingWithType from "./SortingWithType";
 import SortingPrice from "./SortingPrice";
 import { RxCross1 } from "react-icons/rx";
+import { RootState } from "@/Redux/store";
+import { useAppSelector } from "@/Redux/hook";
 
 const All_Cars = () => {
   const [search, setSearch] = useState("");
   const [priceSorting, setPriceSorting] = useState("");
   const [category, setCategory] = useState("");
   const [priceRange, setPriceRange] = useState("");
-
+  const darkLight = useAppSelector((state: RootState) => state.darkLight);
+  const darkLight__ = darkLight.darkLight;
   const { data, isLoading: carAllDataFetchLoading } = useGetCarsQuery({
     search,
     data: {
@@ -61,7 +64,7 @@ const All_Cars = () => {
       </div>
       <div className="grid grid-cols-3 mt-16 gap-x-5">
         {data?.data?.result?.map((data: TCar) => (
-          <Card key={data?._id} className="">
+          <Card key={data?._id} className={darkLight__ ? "bg-gray-950" : ""}>
             <img
               src={data?.car_image}
               className=" mx-auto  box-border"
@@ -69,11 +72,31 @@ const All_Cars = () => {
             />
             <CardContent className="mt-5">
               <div>
-                <h1 className="text-[#000] font-bold">
+                <h1
+                  className={
+                    darkLight__
+                      ? "text-[#fff] font-bold"
+                      : "text-[#000] font-bold"
+                  }
+                >
                   Category: {data?.category?.type}
                 </h1>
-                <h1 className="text-[#000] font-bold">Name: {data.name}</h1>
-                <h1 className="text-[#000] font-bold">
+                <h1
+                  className={
+                    darkLight__
+                      ? "text-[#fff] font-bold"
+                      : "text-[#000] font-bold"
+                  }
+                >
+                  Name: {data.name}
+                </h1>
+                <h1
+                  className={
+                    darkLight__
+                      ? "text-[#fff] font-bold"
+                      : "text-[#000] font-bold"
+                  }
+                >
                   Price Per Hour: {data?.pricePerHour}.TK
                 </h1>
               </div>

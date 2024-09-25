@@ -67,7 +67,7 @@ const Search_Form = () => {
   const carFind = useAppSelector((state: RootState) => state.car_find);
   const { toast } = useToast();
   const [findCar, { isLoading: findCarLoading }] = useFindCarMutation();
-
+  const darkLight = useAppSelector((state: RootState) => state.darkLight);
   const [selected, setSelected] = useState<{ value: string; label: string }[]>(
     []
   );
@@ -150,7 +150,13 @@ const Search_Form = () => {
   };
 
   return (
-    <div className="px-24 mt-2 relative">
+    <div
+      className={
+        darkLight.darkLight
+          ? "lg:px-24 px-2 relative bg-slate-950"
+          : "lg:px-24 px-2 mt-2 relative"
+      }
+    >
       <Card className="card-img rounded-none h-72">
         <CardContent className="">
           <div className="mt-5 grid grid-cols-2 justify-center gap-x-5">

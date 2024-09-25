@@ -21,14 +21,18 @@ import { RootState } from "@/Redux/store";
 const DropdownProfileList = () => {
   const [open, setOpen] = useState(false);
   const loginUser = useAppSelector((state: RootState) => state.auth);
-
+  const darkLight = useAppSelector((state: RootState) => state.darkLight);
   return (
     <DropdownMenu open={open}>
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
           onClick={() => setOpen(true)}
-          className="p-0 border-0 bg-white rounded-none hover:bg-white focus:ring-0 focus:border-none focus:outline-none"
+          className={
+            darkLight.darkLight
+              ? "p-0 border-0 bg-gray-950 rounded-none hover:bg-gray-950 focus:ring-0 focus:border-none focus:outline-none focus:bg-gray-950"
+              : "p-0 border-0 bg-white rounded-none hover:bg-white focus:ring-0 focus:border-none focus:outline-none"
+          }
         >
           <ProfileAvatar />
         </Button>

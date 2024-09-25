@@ -44,7 +44,7 @@ const Avis_Chart = () => {
     <div className="w-full">
       <ChartContainer
         config={chartConfig}
-        className="min-h-[200px] w-[600px] mx-auto"
+        className="min-h-[200px] lg:w-[600px] w-[300px] mx-auto"
       >
         <BarChart accessibilityLayer data={chartData}>
           <CartesianGrid vertical={false} />

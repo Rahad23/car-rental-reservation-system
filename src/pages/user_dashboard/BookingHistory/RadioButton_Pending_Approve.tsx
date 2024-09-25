@@ -1,5 +1,7 @@
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useAppSelector } from "@/Redux/hook";
+import { RootState } from "@/Redux/store";
 
 interface TRadioButtonTypeProps {
   pendingApprove: string;
@@ -10,6 +12,8 @@ const RadioButton_Pending_Approve: React.FC<TRadioButtonTypeProps> = ({
   pendingApprove,
   setPendingApprove,
 }) => {
+  const darkLight = useAppSelector((state: RootState) => state.darkLight);
+  const darkLight__ = darkLight.darkLight;
   return (
     <div className="flex justify-end items-center ">
       <RadioGroup defaultValue="comfortable" className="flex mt-6">
@@ -21,9 +25,18 @@ const RadioButton_Pending_Approve: React.FC<TRadioButtonTypeProps> = ({
             value="pending"
             id="r1"
             checked={pendingApprove === "pending"}
-            className="text-[#D4002A] border-[#D4002A]"
+            className={
+              darkLight__
+                ? "text-[#fff] border-[#fff]"
+                : "text-[#D4002A] border-[#D4002A]"
+            }
           />
-          <Label htmlFor="r1" className="cursor-pointer">
+          <Label
+            htmlFor="r1"
+            className={
+              darkLight__ ? "cursor-pointer text-white" : "cursor-pointer"
+            }
+          >
             Pending
           </Label>
         </div>
@@ -36,9 +49,18 @@ const RadioButton_Pending_Approve: React.FC<TRadioButtonTypeProps> = ({
             id="r2"
             onClick={() => setPendingApprove("approve")}
             checked={pendingApprove === "approve"}
-            className="text-[#D4002A] border-[#D4002A]"
+            className={
+              darkLight__
+                ? "text-[#fff] border-[#fff]"
+                : "text-[#D4002A] border-[#D4002A]"
+            }
           />
-          <Label htmlFor="r2" className="cursor-pointer">
+          <Label
+            htmlFor="r2"
+            className={
+              darkLight__ ? "cursor-pointer text-white" : "cursor-pointer"
+            }
+          >
             Approve
           </Label>
         </div>
@@ -50,9 +72,18 @@ const RadioButton_Pending_Approve: React.FC<TRadioButtonTypeProps> = ({
             value="canceled"
             id="r3"
             checked={pendingApprove === "canceled"}
-            className="text-[#D4002A] border-[#D4002A]"
+            className={
+              darkLight__
+                ? "text-[#fff] border-[#fff]"
+                : "text-[#D4002A] border-[#D4002A]"
+            }
           />
-          <Label htmlFor="r3" className="cursor-pointer">
+          <Label
+            htmlFor="r3"
+            className={
+              darkLight__ ? "cursor-pointer text-white" : "cursor-pointer"
+            }
+          >
             Canceled
           </Label>
         </div>

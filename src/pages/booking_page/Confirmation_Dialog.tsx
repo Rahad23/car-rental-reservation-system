@@ -44,7 +44,8 @@ const Confirmation_Dialog: React.FC<TConfirmationDialogProps> = ({
   data,
 }) => {
   const carBookingData = useAppSelector((state: RootState) => state.booking);
-
+  const darkLight = useAppSelector((state: RootState) => state.darkLight);
+  const darkLight__ = darkLight.darkLight;
   //converted time utc to local time and date
   const convertTimeAndDate = (startTime: string) => {
     // Create a Date object from the startTime
