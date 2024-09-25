@@ -48,7 +48,8 @@ const Login = () => {
   const dispatch = useDispatch();
   const formOpen = useAppSelector((state: RootState) => state.loginFormOpen);
   const login = useAppSelector((state: RootState) => state.loginUser);
-
+  const darkLight = useAppSelector((state: RootState) => state.darkLight);
+  const darkLight__ = darkLight.darkLight;
   //login mutation
   const [loginUser, { isLoading: userLoginLoading }] = useLoginUserMutation();
 
@@ -103,7 +104,11 @@ const Login = () => {
         <Button
           variant="outline"
           onClick={() => dispatch(setIsOpen(!formOpen.isOpen))}
-          className="p-0 border-0 bg-white rounded-none hover:bg-white focus:ring-0 focus:border-none focus:outline-none"
+          className={
+            darkLight__
+              ? "p-0 border-0 bg-gray-950 rounded-none hover:bg-gray-950 focus:ring-0 focus:border-none focus:outline-none"
+              : "p-0 border-0 bg-white rounded-none hover:bg-white focus:ring-0 focus:border-none focus:outline-none"
+          }
         >
           <span className="cool-link text-[#D4002A]">Login</span>
         </Button>

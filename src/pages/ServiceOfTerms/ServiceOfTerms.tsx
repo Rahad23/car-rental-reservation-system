@@ -6,7 +6,7 @@ const ServiceOfTerms = () => {
   const darkLight = useAppSelector((state: RootState) => state.darkLight);
   const darkLight__ = darkLight.darkLight;
   return (
-    <div className="px-24 mt-10">
+    <div className="lg:px-24 px-3 mt-10">
       <h1
         className={
           darkLight__

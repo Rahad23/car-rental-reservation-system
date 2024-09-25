@@ -53,7 +53,7 @@ const ProfileDropdownOption: React.FC<TProfileEditDialogProps> = ({
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
+          <div className="flex items-center px-2">
             <User className="mr-2 h-4 w-4" />
             <div className="w-full">
               <ProfileEditDialog
@@ -62,7 +62,7 @@ const ProfileDropdownOption: React.FC<TProfileEditDialogProps> = ({
               />
             </div>
             <DropdownMenuShortcut>⇧⌘P_E</DropdownMenuShortcut>
-          </DropdownMenuItem>
+          </div>
           <Link to={"/user-booking"}>
             <DropdownMenuItem className="text-gray-950 font-semibold cursor-pointer">
               <TbBrandBooking className="mr-2 h-4 w-4" />

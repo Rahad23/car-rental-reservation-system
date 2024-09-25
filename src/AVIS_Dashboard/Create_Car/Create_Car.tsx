@@ -38,12 +38,14 @@ import { carValidationSchema } from "./Create_Car_Data_Validation";
 import LoadingButton from "@/Loading_Spinners/LoadingButton/LoadingButton";
 import { useToast } from "@/hooks/use-toast";
 import { getCurrentFormattedDate } from "@/formatedCurrentTimes/TimeFormate";
+import { uploadImage } from "@/ImgSaveIntoCloudinary/ImgSaveIntoCloudinary";
 
 const Create_Car = () => {
   const { toast } = useToast();
   const { data, isLoading: carTypeLoading } = useGetCarTypeQuery(undefined);
   const { data: carFeatures, isLoading: carFeaturesLoading } =
     useGetCarFeatureQuery(undefined);
+  const [lodingSubmit, setLoadingSubmit] = useState(false);
 
   //use redux carSlice hare dispatch redux carSlice and set input value
   const dispatch = useDispatch();
@@ -106,17 +108,14 @@ const Create_Car = () => {
       })) || [];
 
   const handleSubmit = async () => {
+    setLoadingSubmit(true);
     try {
-      const formData = new FormData();
-
       const resultValidation = carValidationSchema.parse(carInputData);
 
-      if (resultValidation) {
-        //here set car image append to form data
-        if (carImgFile) {
-          formData.append("file", carImgFile);
-        }
+      const imgLink = carImgFile && (await uploadImage(carImgFile));
 
+      if (resultValidation && imgLink) {
+        //here set car image append to form data
         const dataFields = {
           name: carInputData.name,
           pricePerHour: carInputData.pricePerHour,
@@ -125,28 +124,51 @@ const Create_Car = () => {
           color: carInputData.color,
           isElectric: carInputData.isElectric,
           features: carInputData.features,
+          car_image: imgLink,
         };
 
         //here set input field data append to form data
-        formData.append("data", JSON.stringify(dataFields));
 
-        const result = await makeCar({
-          payload: formData,
-          token: authData.token,
-        });
+        const isValid =
+          dataFields.name &&
+          dataFields.pricePerHour &&
+          dataFields.description &&
+          dataFields.color &&
+          dataFields.category &&
+          dataFields.isElectric &&
+          dataFields.features.length &&
+          dataFields.car_image;
 
-        if (result?.data?.success) {
-          dispatch(resetCarDataState());
-          setAdImgFile(null);
-          setSelected([]);
-          toast({
-            title: "Car make successfully!",
-            description: getCurrentFormattedDate(),
-            style: { background: "#7af59b", color: "#2D3A4B" },
+        if (isValid) {
+          const result = await makeCar({
+            payload: dataFields,
+            token: authData.token,
           });
+
+          if (result?.data?.success) {
+            dispatch(resetCarDataState());
+            setAdImgFile(null);
+            setSelected([]);
+            setLoadingSubmit(false);
+            toast({
+              title: "Car make successfully!",
+              description: getCurrentFormattedDate(),
+              style: { background: "#7af59b", color: "#2D3A4B" },
+            });
+          }
+
+          if (result?.error) {
+            setLoadingSubmit(false);
+            toast({
+              title: "Failed!",
+              description: getCurrentFormattedDate(),
+              style: { background: "#ef4444", color: "#fff" },
+            });
+          }
         }
       }
     } catch (e) {
+      setLoadingSubmit(false);
       if (e instanceof z.ZodError) {
         setZodError(e.errors);
       } else {
@@ -160,7 +182,7 @@ const Create_Car = () => {
       <h1
         className={
           darkLight__
-            ? "text-xl font-semibold mt-2 text-gray-100"
+            ? "text-xl font-semibold mt-2  text-gray-100"
             : "text-xl font-semibold mt-2 text-gray-950"
         }
       >
@@ -354,7 +376,7 @@ const Create_Car = () => {
         </div>
       </div>
       <div className="flex justify-center mt-7">
-        {carCreateLoading ? (
+        {carCreateLoading || lodingSubmit ? (
           <LoadingButton message="Wait" />
         ) : (
           <Button

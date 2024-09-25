@@ -64,7 +64,7 @@ const Booking_Car = () => {
   const [bookingCar, { isLoading: bookingLoading }] = useBookingCarMutation();
   const [time_, setTime] = useState("");
   const [timeSetError, setTimeSetError] = useState("");
-  const [seeMoreDescription, setSeeMoreDescription] = useState(false);
+  const [seeMoreDescription, setSeeMoreDescription] = useState(true);
   useEffect(() => {
     if (value_) {
       if (id) {

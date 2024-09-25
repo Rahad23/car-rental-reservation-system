@@ -29,6 +29,7 @@ import { useUpdateUserMutation } from "@/Redux/features/auth/Auth/Auth";
 import LoadingButton from "@/Loading_Spinners/LoadingButton/LoadingButton";
 import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input";
+import { uploadImage } from "@/ImgSaveIntoCloudinary/ImgSaveIntoCloudinary";
 
 interface TProfileEditDialogProps {
   profileImg: string;
@@ -49,6 +50,7 @@ const ProfileEditDialog: React.FC<TProfileEditDialogProps> = ({
   const dispatch = useDispatch();
   //   const authData = useAppSelector((state: RootState) => state.auth);
   const updateData = useAppSelector((state: RootState) => state.updateUser);
+
   //auth
   const auth = useAppSelector((state: RootState) => state.auth);
   //update user mutation
@@ -73,34 +75,33 @@ const ProfileEditDialog: React.FC<TProfileEditDialogProps> = ({
 
   const handleUpdate = async () => {
     try {
-      const formData = new FormData();
-
       const resultValidation = updateUserDataSchema.parse(updateData);
 
       if (resultValidation) {
         //set profile img conditional
-        if (profileImg_) {
-          formData.append("file", profileImg_);
-        }
+        const userImg = profileImg_ ? await uploadImage(profileImg_) : "img";
 
         const payload = {
           name: updateData.name,
           email: updateData.email,
           phone: updateData.phone,
           address: updateData.address,
+          profile_img: userImg,
         };
 
-        formData.append("data", JSON.stringify(payload));
+        const isValid = payload.name && payload.email && payload.address;
+        if (isValid) {
+          const result = await update_profile({
+            payload,
+            token: auth.token,
+          });
 
-        const result = await update_profile({
-          payload: formData,
-          token: auth.token,
-        });
-
-        if (result?.data?.success) {
-          dispatch(resetUpdateUserState());
-          setModalIsOpen(false);
-          setOpenDropdown(false);
+          if (result?.data?.success) {
+            dispatch(resetUpdateUserState());
+            setModalIsOpen(false);
+            setOpenDropdown(false);
+            setProfileImg(null);
+          }
         }
       }
     } catch (e) {
@@ -123,6 +124,7 @@ const ProfileEditDialog: React.FC<TProfileEditDialogProps> = ({
           Edit Profile
         </Button>
       </DialogTrigger>
+
       <DialogContent className="sm:max-w-[600px] px-7 overflow-y-scroll no-scrollbar h-[550px]">
         <DialogHeader>
           <div className="flex flex-col items-center justify-center mt-4">
@@ -174,71 +176,71 @@ const ProfileEditDialog: React.FC<TProfileEditDialogProps> = ({
               {!profileImg_ && "Profile img is Optional!"}
             </span>
           </div>
+          <div className="grid gap-4 py-4">
+            <div className="flex flex-col  gap-y-2">
+              <Label htmlFor="name">Name</Label>
+              <div>
+                <Input
+                  id="name"
+                  onChange={(e) => dispatch(setUpdateName(e.target.value))}
+                  value={updateData.name}
+                  placeholder="Name"
+                  className=""
+                />
+                <span className="text-red-600 text-sm">
+                  {zodError?.find((err) => err.path[0] === "name")?.message}
+                </span>
+              </div>
+            </div>
+            <div className="flex flex-col  gap-y-2">
+              <Label htmlFor="name">Email</Label>
+              <div>
+                <Input
+                  id="email"
+                  onChange={(e) => dispatch(setUpdateEmail(e.target.value))}
+                  value={updateData.email}
+                  placeholder="Email"
+                  className=""
+                />
+                <span className="text-red-600 text-sm">
+                  {zodError?.find((err) => err.path[0] === "email")?.message}
+                </span>
+              </div>
+            </div>
+            <div className="flex flex-col  gap-y-2">
+              <Label htmlFor="phone">Phone</Label>
+              <div>
+                <PhoneInput
+                  defaultCountry="BD"
+                  value={updateData.phone}
+                  onChange={setValue}
+                  className="border-[1px] border-[#ddd]  w-full rounded-md text-gray-700 px-1"
+                  placeholder="Phone number"
+                  numberInputProps={{
+                    className: "rounded-md px-4 focus:outline-none py-2 px-3",
+                  }}
+                />
+                <span className="text-red-600">
+                  {zodError?.find((err) => err.path[0] === "phone")?.message}
+                </span>
+              </div>
+            </div>
+            <div className="flex flex-col  gap-y-2">
+              <Label htmlFor="address">Address</Label>
+              <div>
+                <Textarea
+                  id="address"
+                  onChange={(e) => dispatch(setUpdateAddress(e.target.value))}
+                  value={updateData.address}
+                  placeholder="Type your address here."
+                />
+                <span className="text-red-600 text-sm">
+                  {zodError?.find((err) => err.path[0] === "address")?.message}
+                </span>
+              </div>
+            </div>
+          </div>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="flex flex-col  gap-y-2">
-            <Label htmlFor="name">Name</Label>
-            <div>
-              <Input
-                id="name"
-                onChange={(e) => dispatch(setUpdateName(e.target.value))}
-                value={updateData.name}
-                placeholder="Name"
-                className=""
-              />
-              <span className="text-red-600 text-sm">
-                {zodError?.find((err) => err.path[0] === "name")?.message}
-              </span>
-            </div>
-          </div>
-          <div className="flex flex-col  gap-y-2">
-            <Label htmlFor="name">Email</Label>
-            <div>
-              <Input
-                id="email"
-                onChange={(e) => dispatch(setUpdateEmail(e.target.value))}
-                value={updateData.email}
-                placeholder="Email"
-                className=""
-              />
-              <span className="text-red-600 text-sm">
-                {zodError?.find((err) => err.path[0] === "email")?.message}
-              </span>
-            </div>
-          </div>
-          <div className="flex flex-col  gap-y-2">
-            <Label htmlFor="phone">Phone</Label>
-            <div>
-              <PhoneInput
-                defaultCountry="BD"
-                value={updateData.phone}
-                onChange={setValue}
-                className="border-[1px] border-[#ddd]  w-full rounded-md text-gray-700 px-1"
-                placeholder="Phone number"
-                numberInputProps={{
-                  className: "rounded-md px-4 focus:outline-none py-2 px-3",
-                }}
-              />
-              <span className="text-red-600">
-                {zodError?.find((err) => err.path[0] === "phone")?.message}
-              </span>
-            </div>
-          </div>
-          <div className="flex flex-col  gap-y-2">
-            <Label htmlFor="address">Address</Label>
-            <div>
-              <Textarea
-                id="address"
-                onChange={(e) => dispatch(setUpdateAddress(e.target.value))}
-                value={updateData.address}
-                placeholder="Type your address here."
-              />
-              <span className="text-red-600 text-sm">
-                {zodError?.find((err) => err.path[0] === "address")?.message}
-              </span>
-            </div>
-          </div>
-        </div>
         <DialogFooter>
           {updateUserLoading ? (
             <LoadingButton message="Wait.." />

@@ -47,6 +47,7 @@ import { TCarFeatures, TCarType } from "../Create_Car/Create_Car_Type";
 import { useParams } from "react-router-dom";
 import { carUpdateValidationSchema } from "./Car_Edit_Validation";
 import LoadingSpenar from "@/Loading_Spinners/LoadingSpenar/LoadingSpenar";
+import { uploadImage } from "@/ImgSaveIntoCloudinary/ImgSaveIntoCloudinary";
 
 const Car_Edit = () => {
   const { toast } = useToast();
@@ -73,7 +74,7 @@ const Car_Edit = () => {
 
   const [carImgFile, setAdImgFile] = useState<File | null>(null);
   const [zodError, setZodError] = useState<ZodIssue[]>([]);
-
+  const [loadingUpdate, setLoadingUpdate] = useState(false);
   //custom data set in react multiple select field
   const customStrings = {
     allItemsAreSelected: "All features are selected.",
@@ -130,17 +131,16 @@ const Car_Edit = () => {
       })) || [];
 
   const handleSubmit = async () => {
+    setLoadingUpdate(true);
     try {
-      const formData = new FormData();
-
       const resultValidation =
         carUpdateValidationSchema.parse(carUpdateInputData);
 
       if (resultValidation) {
         //here set car image append to form data
-        if (carImgFile) {
-          formData.append("file", carImgFile);
-        }
+        const imgLink = carImgFile
+          ? await uploadImage(carImgFile)
+          : singleCar?.data?.car_image;
 
         const dataFields = {
           name: carUpdateInputData.name,
@@ -150,14 +150,12 @@ const Car_Edit = () => {
           color: carUpdateInputData.color,
           isElectric: carUpdateInputData.isElectric,
           features: carUpdateInputData.features,
+          car_image: imgLink,
         };
-
-        //here set input field data append to form data
-        formData.append("data", JSON.stringify(dataFields));
 
         const result = await updateCar({
           id: id,
-          payload: formData,
+          payload: dataFields,
           token: authData.token,
         });
 
@@ -166,6 +164,7 @@ const Car_Edit = () => {
           setAdImgFile(null);
           setImgPreview(null);
           setSelected([]);
+          setLoadingUpdate(false);
           toast({
             title: "Car update successfully!",
             description: getCurrentFormattedDate(),
@@ -174,6 +173,7 @@ const Car_Edit = () => {
         }
       }
     } catch (e) {
+      setLoadingUpdate(false);
       if (e instanceof z.ZodError) {
         setZodError(e.errors);
       } else {
@@ -181,8 +181,6 @@ const Car_Edit = () => {
       }
     }
   };
-
-
 
   return getSingleCarLoading ? (
     <div className="w-full">
@@ -367,7 +365,7 @@ const Car_Edit = () => {
         </div>
       </div>
       <div className="flex justify-center mt-7">
-        {carUpdateLoading ? (
+        {carUpdateLoading || loadingUpdate ? (
           <LoadingButton message="Wait" />
         ) : (
           <Button
